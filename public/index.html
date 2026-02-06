@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SDLV Booker</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <div class="header-content">
+        <div class="header-row">
+          <div class="logo">
+            <div class="logo-icon">&#9917;</div>
+            <h1>SDLV Booker</h1>
+          </div>
+          <div class="header-badge">
+            <span class="header-badge-dot"></span>
+            Scheduler actif
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="main">
+      <!-- Dashboard Stats -->
+      <section class="stats-bar">
+        <div class="stat-card">
+          <span class="stat-value" id="stat-rules">-</span>
+          <span class="stat-label">Regles actives</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value" id="stat-upcoming">-</span>
+          <span class="stat-label">Reservations a venir</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value" id="stat-advance">J-45</span>
+          <span class="stat-label">Ouverture creneaux</span>
+        </div>
+      </section>
+
+      <!-- Rules Section -->
+      <section class="section">
+        <div class="section-header">
+          <h2>Regles de reservation</h2>
+          <button class="btn btn-primary" onclick="showAddRule()">+ Nouvelle regle</button>
+        </div>
+
+        <!-- Add Rule Form (hidden by default) -->
+        <div id="rule-form" class="card rule-form" style="display:none">
+          <h3 id="form-title">Ajouter une regle</h3>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Jour de la semaine</label>
+              <select id="input-day">
+                <option value="1">Lundi</option>
+                <option value="2">Mardi</option>
+                <option value="3">Mercredi</option>
+                <option value="4">Jeudi</option>
+                <option value="5">Vendredi</option>
+                <option value="6">Samedi</option>
+                <option value="0">Dimanche</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Heure souhaitee</label>
+              <input type="time" id="input-time" value="19:00">
+            </div>
+            <div class="form-group">
+              <label>Duree</label>
+              <select id="input-duration">
+                <option value="60">60 min</option>
+                <option value="90">90 min</option>
+                <option value="120">120 min</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group" style="margin-top: 12px">
+            <label>Preference de terrains (glisser pour ordonner, decocher pour exclure)</label>
+            <div id="playground-prefs" class="playground-prefs"></div>
+          </div>
+          <div class="form-actions">
+            <button class="btn btn-secondary" onclick="hideAddRule()">Annuler</button>
+            <button class="btn btn-primary" id="btn-save-rule" onclick="saveRule()">Enregistrer</button>
+          </div>
+        </div>
+
+        <!-- Rules List -->
+        <div id="rules-list" class="rules-grid">
+          <div class="section-loading"><div class="section-spinner"></div> Chargement...</div>
+        </div>
+      </section>
+
+      <!-- Manual Booking Section -->
+      <section class="section">
+        <div class="section-header">
+          <h2>Reservation manuelle</h2>
+        </div>
+        <div class="card">
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Date</label>
+              <input type="date" id="manual-date">
+            </div>
+            <div class="form-group">
+              <label>Heure debut</label>
+              <input type="time" id="manual-time-from" value="19:00">
+            </div>
+            <div class="form-group">
+              <label>Heure fin</label>
+              <input type="time" id="manual-time-to" value="22:00">
+            </div>
+            <div class="form-group">
+              <label>Duree</label>
+              <select id="manual-duration">
+                <option value="">Toutes</option>
+                <option value="60">60 min</option>
+                <option value="90">90 min</option>
+                <option value="120">120 min</option>
+              </select>
+            </div>
+            <div class="form-group" style="display:flex;align-items:flex-end">
+              <button class="btn btn-primary" id="btn-search-slots" onclick="searchSlots()">Rechercher</button>
+            </div>
+          </div>
+          <div id="manual-slots"></div>
+        </div>
+      </section>
+
+      <!-- Bookings Section (live from DoInSport) -->
+      <section class="section">
+        <div class="section-header">
+          <h2>Mes reservations</h2>
+          <button class="btn btn-secondary btn-sm" id="btn-refresh-bookings" onclick="loadBookings()">Actualiser</button>
+        </div>
+        <div id="bookings-list" class="logs-table-container">
+          <div class="section-loading"><div class="section-spinner"></div> Chargement...</div>
+        </div>
+      </section>
+
+      <!-- Logs Section -->
+      <section class="section">
+        <div class="section-header">
+          <h2>Historique du bot</h2>
+        </div>
+        <div id="logs-list" class="logs-table-container">
+          <div class="section-loading"><div class="section-spinner"></div> Chargement...</div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
