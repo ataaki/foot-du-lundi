@@ -1,3 +1,5 @@
+const { getCredentials } = require('../db/database');
+
 const API_BASE = 'https://api-v3.doinsport.club';
 
 let tokenData = null;
@@ -26,10 +28,16 @@ async function login(email, password) {
 
 async function getToken() {
   if (!tokenData || Date.now() >= tokenExpiry - 60000) {
-    // Token expired or about to expire, re-login
-    await login(process.env.DOINSPORT_EMAIL, process.env.DOINSPORT_PASSWORD);
+    const creds = getCredentials();
+    if (!creds) throw new Error('Identifiants DoInSport non configurés');
+    await login(creds.email, creds.password);
   }
   return tokenData.token;
+}
+
+function resetToken() {
+  tokenData = null;
+  tokenExpiry = 0;
 }
 
 async function getMe() {
@@ -40,4 +48,4 @@ async function getMe() {
   return res.json();
 }
 
-module.exports = { login, getToken, getMe };
+module.exports = { login, getToken, resetToken, getMe };

@@ -6,6 +6,7 @@ const path = require('path');
 const apiRoutes = require('./routes/api');
 const { startScheduler } = require('./scheduler/scheduler');
 const { resolveConfig } = require('./api/config-resolver');
+const { getCredentials } = require('./db/database');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -25,13 +26,18 @@ app.get('/{*path}', (req, res) => {
 app.listen(PORT, async () => {
   console.log(`Foot Du Lundi running at http://localhost:${PORT}`);
 
-  // Auto-resolve Stripe & club config from DoInSport API
-  try {
-    await resolveConfig();
-    console.log('[Config] Configuration resolved successfully');
-  } catch (err) {
-    console.error(`[Config] Failed to resolve config: ${err.message}`);
-    console.error('[Config] Payment features will not work until config is resolved');
+  // Only resolve config if credentials are already configured
+  const creds = getCredentials();
+  if (creds) {
+    try {
+      await resolveConfig();
+      console.log('[Config] Configuration resolved successfully');
+    } catch (err) {
+      console.error(`[Config] Failed to resolve config: ${err.message}`);
+      console.error('[Config] Payment features will not work until config is resolved');
+    }
+  } else {
+    console.log('[Config] No credentials configured — waiting for setup via the web interface');
   }
 
   startScheduler();

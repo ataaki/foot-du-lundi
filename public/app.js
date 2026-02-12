@@ -141,6 +141,7 @@ async function loadDashboard() {
     renderRules(data.rules);
     renderLogs(data.recent_logs);
     loadBookings();
+    startAutoRefresh();
   } catch (err) {
     console.error('Failed to load dashboard:', err);
   }
@@ -752,40 +753,165 @@ function formatDateTime(dtStr) {
   return d.toLocaleString('fr-FR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
 }
 
-// ===== INIT =====
+// ===== CREDENTIALS =====
 
-async function init() {
+async function checkCredentials() {
   try {
-    const data = await apiGet('/dashboard');
-    dashboardConfig = data.config;
-    window._dashboardData = data;
-    renderStats(data);
-    renderRules(data.rules);
-    renderLogs(data.recent_logs);
-    loadBookings();
-  } catch (err) {
-    console.error('Failed to load dashboard:', err);
+    const status = await apiGet('/credentials/status');
+    return status.configured;
+  } catch {
+    return false;
   }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+function showSetupScreen() {
+  document.getElementById('setup-screen').style.display = '';
+  document.getElementById('app-main').style.display = 'none';
+}
+
+function showApp() {
+  document.getElementById('setup-screen').style.display = 'none';
+  document.getElementById('app-main').style.display = '';
+}
+
+async function submitSetup() {
+  const email = document.getElementById('setup-email').value.trim();
+  const password = document.getElementById('setup-password').value;
+  const errorEl = document.getElementById('setup-error');
+  const btn = document.getElementById('btn-setup');
+
+  if (!email || !password) {
+    errorEl.textContent = 'Veuillez remplir tous les champs.';
+    errorEl.style.display = '';
+    return;
+  }
+
+  errorEl.style.display = 'none';
+  btnLoading(btn, true);
+
+  try {
+    await apiPut('/credentials', { email, password });
+    showApp();
+    loadDashboard();
+    toast('success', 'Connexion réussie', 'Identifiants enregistrés.');
+  } catch (err) {
+    errorEl.textContent = err.message;
+    errorEl.style.display = '';
+  } finally {
+    btnLoading(btn, false);
+  }
+}
+
+async function showCredentialsModal() {
+  let currentEmail = '';
+  try {
+    const status = await apiGet('/credentials/status');
+    currentEmail = status.email || '';
+  } catch {}
+
+  const overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  overlay.innerHTML = `
+    <div class="modal-box">
+      <div class="modal-title">Identifiants DoInSport</div>
+      <div class="modal-message">Modifiez vos identifiants de connexion. Le login sera testé avant enregistrement.</div>
+      <div class="form-group" style="margin-bottom: 12px">
+        <label>Email</label>
+        <input type="email" id="creds-email" value="${currentEmail}" autocomplete="email" style="width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-family: inherit; font-size: 14px;">
+      </div>
+      <div class="form-group" style="margin-bottom: 24px">
+        <label>Mot de passe</label>
+        <input type="password" id="creds-password" placeholder="Nouveau mot de passe" autocomplete="current-password" style="width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-family: inherit; font-size: 14px;">
+      </div>
+      <div id="creds-error" class="setup-error" style="display:none"></div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" data-action="cancel">Annuler</button>
+        <button class="btn btn-primary" data-action="confirm">Enregistrer</button>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(overlay);
+
+  const emailInput = overlay.querySelector('#creds-email');
+  const passwordInput = overlay.querySelector('#creds-password');
+  const errorEl = overlay.querySelector('#creds-error');
+  const confirmBtn = overlay.querySelector('[data-action="confirm"]');
+
+  emailInput.focus();
+
+  function close() {
+    overlay.classList.add('modal-out');
+    overlay.addEventListener('animationend', () => overlay.remove());
+  }
+
+  async function save() {
+    const email = emailInput.value.trim();
+    const password = passwordInput.value;
+
+    if (!email || !password) {
+      errorEl.textContent = 'Veuillez remplir tous les champs.';
+      errorEl.style.display = '';
+      return;
+    }
+
+    errorEl.style.display = 'none';
+    btnLoading(confirmBtn, true);
+
+    try {
+      await apiPut('/credentials', { email, password });
+      toast('success', 'Identifiants mis à jour');
+      close();
+      loadDashboard();
+    } catch (err) {
+      errorEl.textContent = err.message;
+      errorEl.style.display = '';
+    } finally {
+      btnLoading(confirmBtn, false);
+    }
+  }
+
+  overlay.querySelector('[data-action="cancel"]').onclick = close;
+  confirmBtn.onclick = save;
+  passwordInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') save(); });
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) close(); });
+}
+
+// ===== INIT =====
+
+async function init() {
+  const configured = await checkCredentials();
+  if (!configured) {
+    showSetupScreen();
+    return;
+  }
+
+  showApp();
+
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
   document.getElementById('manual-date').value = tomorrow.toISOString().split('T')[0];
-  init();
-});
 
-// Auto-refresh every 60 seconds
-setInterval(async () => {
-  try {
-    const data = await apiGet('/dashboard');
-    dashboardConfig = data.config;
-    window._dashboardData = data;
-    renderStats(data);
-    renderRules(data.rules);
-    renderLogs(data.recent_logs);
-    loadBookings();
-  } catch (err) {
-    console.error('Auto-refresh failed:', err);
-  }
-}, 60000);
+  loadDashboard();
+}
+
+let refreshInterval = null;
+
+function startAutoRefresh() {
+  if (refreshInterval) return;
+  refreshInterval = setInterval(async () => {
+    try {
+      const data = await apiGet('/dashboard');
+      dashboardConfig = data.config;
+      window._dashboardData = data;
+      renderStats(data);
+      renderRules(data.rules);
+      renderLogs(data.recent_logs);
+      loadBookings();
+    } catch (err) {
+      console.error('Auto-refresh failed:', err);
+    }
+  }, 60000);
+}
+
+document.addEventListener('DOMContentLoaded', init);

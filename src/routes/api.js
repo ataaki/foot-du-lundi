@@ -2,9 +2,45 @@ const express = require('express');
 const router = express.Router();
 const db = require('../db/database');
 const { getPlanning, findAllSlots, findBestSlot, createBooking, createPaymentCart, createPayment, confirmDoinsportPayment, cancelBooking, getMyBookings, PLAYGROUNDS, PLAYGROUND_NAMES } = require('../api/doinsport');
-const { getMe } = require('../api/auth');
+const { login, getMe, resetToken } = require('../api/auth');
 const { confirmStripePayment } = require('../api/stripe-confirm');
 const { executeBooking, getNextDateForDay, getJ45Info, DAY_NAMES, getBookingAdvanceDays } = require('../scheduler/scheduler');
+const { resolveConfig, resetConfig } = require('../api/config-resolver');
+
+// --- Credentials ---
+
+router.get('/credentials/status', (req, res) => {
+  const creds = db.getCredentials();
+  res.json({ configured: !!creds, email: creds ? creds.email : null });
+});
+
+router.put('/credentials', async (req, res) => {
+  const { email, password } = req.body;
+  if (!email || !password) {
+    return res.status(400).json({ error: 'Email et mot de passe requis' });
+  }
+
+  // Test login before saving
+  try {
+    await login(email, password);
+  } catch (err) {
+    return res.status(401).json({ error: 'Identifiants invalides : ' + err.message });
+  }
+
+  // Save to DB and reset cached token/config
+  db.setCredentials(email, password);
+  resetToken();
+  resetConfig();
+
+  // Re-resolve config with new credentials
+  try {
+    await resolveConfig();
+  } catch (err) {
+    console.error('[Config] Failed to resolve after credentials update:', err.message);
+  }
+
+  res.json({ success: true });
+});
 
 // --- Rules CRUD ---
 
@@ -329,9 +365,11 @@ router.get('/dashboard', (req, res) => {
     duration_label: `${rule.duration} min`,
   }));
 
+  const creds = db.getCredentials();
   res.json({
     rules: rulesWithInfo,
     recent_logs: logs,
+    credentials_configured: !!creds,
     config: {
       advance_days: getBookingAdvanceDays(),
       playgrounds: PLAYGROUNDS,

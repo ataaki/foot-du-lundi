@@ -88,4 +88,8 @@ function getConfig() {
   return resolvedConfig;
 }
 
-module.exports = { resolveConfig, getConfig, CLUB_ID };
+function resetConfig() {
+  resolvedConfig = null;
+}
+
+module.exports = { resolveConfig, getConfig, resetConfig, CLUB_ID };

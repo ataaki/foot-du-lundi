@@ -144,6 +144,20 @@ function setSetting(key, value) {
   getDb().prepare('INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)').run(key, String(value));
 }
 
+// --- Credentials ---
+
+function getCredentials() {
+  const email = getSetting('doinsport_email');
+  const password = getSetting('doinsport_password');
+  if (!email || !password) return null;
+  return { email, password };
+}
+
+function setCredentials(email, password) {
+  setSetting('doinsport_email', email);
+  setSetting('doinsport_password', password);
+}
+
 module.exports = {
   getDb,
   getAllRules,
@@ -158,4 +172,6 @@ module.exports = {
   getUpcomingBookings,
   getSetting,
   setSetting,
+  getCredentials,
+  setCredentials,
 };

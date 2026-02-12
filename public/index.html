@@ -15,7 +15,28 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="app">
+  <!-- Setup Screen (shown when no credentials configured) -->
+  <div id="setup-screen" class="setup-screen" style="display:none">
+    <div class="setup-card">
+      <div class="setup-logo">
+        <div class="logo-icon">&#9917;</div>
+        <h1>Foot Du Lundi</h1>
+      </div>
+      <p class="setup-subtitle">Connectez-vous avec vos identifiants DoInSport pour commencer.</p>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="setup-email" placeholder="votre@email.com" autocomplete="email">
+      </div>
+      <div class="form-group">
+        <label>Mot de passe</label>
+        <input type="password" id="setup-password" placeholder="Mot de passe DoInSport" autocomplete="current-password">
+      </div>
+      <div id="setup-error" class="setup-error" style="display:none"></div>
+      <button class="btn btn-primary setup-btn" id="btn-setup" onclick="submitSetup()">Connexion</button>
+    </div>
+  </div>
+
+  <div class="app" id="app-main" style="display:none">
     <header class="header">
       <div class="header-content">
         <div class="header-row">
@@ -23,9 +44,12 @@
             <div class="logo-icon">&#9917;</div>
             <h1>Foot Du Lundi</h1>
           </div>
-          <div class="header-badge">
-            <span class="header-badge-dot"></span>
-            Scheduler actif
+          <div class="header-right">
+            <button class="btn-icon header-settings-btn" onclick="showCredentialsModal()" title="Modifier les identifiants">&#9881;</button>
+            <div class="header-badge">
+              <span class="header-badge-dot"></span>
+              Scheduler actif
+            </div>
           </div>
         </div>
       </div>

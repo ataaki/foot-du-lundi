@@ -1,5 +1,5 @@
 const cron = require('node-cron');
-const { getEnabledRules, createLog, getSetting } = require('../db/database');
+const { getEnabledRules, createLog, getSetting, getCredentials } = require('../db/database');
 const { findBestSlot, createBooking, createPaymentCart, createPayment, confirmDoinsportPayment, hasBookingOnDate } = require('../api/doinsport');
 const { getMe } = require('../api/auth');
 const { confirmStripePayment } = require('../api/stripe-confirm');
@@ -219,6 +219,11 @@ async function executeBooking(rule, targetDate) {
  * Check all rules and execute bookings for today's J-45 targets.
  */
 async function runScheduledBookings() {
+  if (!getCredentials()) {
+    console.log('[Scheduler] No credentials configured, skipping.');
+    return;
+  }
+
   const rules = getEnabledRules();
   console.log(`[Scheduler] Checking ${rules.length} active rules...`);
 

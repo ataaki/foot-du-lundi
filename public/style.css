@@ -1029,6 +1029,100 @@ body {
   animation: spin 0.7s linear infinite;
 }
 
+/* ===== SETUP SCREEN ===== */
+.setup-screen {
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.setup-screen::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 600px 300px at 80% 20%, rgba(56,189,248,0.12) 0%, transparent 70%),
+    radial-gradient(ellipse 400px 200px at 20% 80%, rgba(16,185,129,0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.setup-card {
+  background: var(--card-bg);
+  border-radius: 16px;
+  padding: 36px 32px;
+  max-width: 400px;
+  width: 100%;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+  position: relative;
+  animation: modalIn 0.4s cubic-bezier(0.21, 1.02, 0.73, 1);
+}
+
+.setup-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.setup-logo h1 {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.setup-subtitle {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: 24px;
+  line-height: 1.5;
+}
+
+.setup-card .form-group {
+  margin-bottom: 16px;
+}
+
+.setup-btn {
+  width: 100%;
+  margin-top: 8px;
+  min-height: 44px;
+  font-size: 15px;
+}
+
+.setup-error {
+  background: var(--danger-bg);
+  color: var(--danger-text);
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  margin-bottom: 12px;
+  line-height: 1.4;
+}
+
+/* ===== HEADER SETTINGS ===== */
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.header-settings-btn {
+  color: rgba(255,255,255,0.6);
+  border-color: rgba(255,255,255,0.15);
+  font-size: 18px;
+}
+
+.header-settings-btn:hover {
+  color: #fff;
+  background: rgba(255,255,255,0.1);
+  border-color: rgba(255,255,255,0.25);
+}
+
 /* ===== RESPONSIVE ===== */
 
 /* Tablet */
@@ -1365,6 +1459,28 @@ body {
     top: 4px;
     right: 6px;
     font-size: 10px;
+  }
+
+  /* Setup screen mobile */
+  .setup-screen {
+    padding: 16px;
+    align-items: flex-end;
+  }
+
+  .setup-card {
+    padding: 24px 20px;
+    border-radius: 16px 16px 0 0;
+    max-width: 100%;
+  }
+
+  .setup-card .form-group input {
+    font-size: 16px;
+    min-height: 48px;
+  }
+
+  .header-settings-btn {
+    min-width: 40px;
+    min-height: 40px;
   }
 }
 
