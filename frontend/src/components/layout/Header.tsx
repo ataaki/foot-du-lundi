@@ -1,4 +1,5 @@
 import { useTheme } from '../../hooks/use-theme'
+import { useServerTime } from '../../hooks/use-server-time'
 import Button from '../ui/Button'
 
 interface HeaderProps {
@@ -9,6 +10,7 @@ const THEME_CYCLE = ['system', 'light', 'dark'] as const
 
 export default function Header({ onOpenSettings }: HeaderProps) {
   const { theme, resolvedTheme, setTheme } = useTheme()
+  const serverTime = useServerTime()
 
   function cycleTheme() {
     const idx = THEME_CYCLE.indexOf(theme)
@@ -34,7 +36,7 @@ export default function Header({ onOpenSettings }: HeaderProps) {
         <div className="flex items-center gap-2.5">
           <div className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-            <span className="hidden sm:inline">Scheduler actif</span>
+            {serverTime && <span className="font-mono tabular-nums">{serverTime}</span>}
           </div>
           <button
             onClick={cycleTheme}

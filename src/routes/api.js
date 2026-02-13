@@ -148,6 +148,12 @@ router.post('/telegram/test', async (req, res) => {
   }
 });
 
+// --- Server Time ---
+
+router.get('/time', (req, res) => {
+  res.json({ time: new Date().toISOString() });
+});
+
 // --- Planning / Preview ---
 
 router.get('/planning/:date', async (req, res) => {
