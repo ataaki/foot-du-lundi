@@ -50,6 +50,9 @@ export default function App() {
   const [settingsEmail, setSettingsEmail] = useState('')
   const [settingsPassword, setSettingsPassword] = useState('')
   const [settingsSaving, setSettingsSaving] = useState(false)
+  const [settingsTelegramToken, setSettingsTelegramToken] = useState('')
+  const [settingsTelegramChatId, setSettingsTelegramChatId] = useState('')
+  const [telegramTesting, setTelegramTesting] = useState(false)
   const [slotSearchDate, setSlotSearchDate] = useState('')
 
   // --- Check credentials on mount ---
@@ -222,22 +225,43 @@ export default function App() {
   }, [dashboard, toast])
 
   // --- Settings ---
-  const handleOpenSettings = useCallback(() => {
+  const handleOpenSettings = useCallback(async () => {
     setSettingsEmail(credentialsEmail)
     setSettingsPassword('')
+    setSettingsTelegramToken('')
     setSettingsOpen(true)
+    try {
+      const settings = await api.get<{
+        telegram_bot_token: string
+        telegram_chat_id: string
+      }>('/settings')
+      setSettingsTelegramChatId(settings.telegram_chat_id || '')
+    } catch {
+      // ignore — fields stay empty
+    }
   }, [credentialsEmail])
 
   const handleSaveSettings = useCallback(async () => {
-    if (!settingsEmail || !settingsPassword) {
-      toast('error', 'Erreur', 'Veuillez remplir tous les champs.')
-      return
-    }
     setSettingsSaving(true)
     try {
-      await api.put('/credentials', { email: settingsEmail, password: settingsPassword })
-      toast('success', 'Identifiants mis a jour')
-      setCredentialsEmail(settingsEmail)
+      if (settingsPassword) {
+        if (!settingsEmail) {
+          toast('error', 'Erreur', 'Email requis avec le mot de passe.')
+          setSettingsSaving(false)
+          return
+        }
+        await api.put('/credentials', { email: settingsEmail, password: settingsPassword })
+        setCredentialsEmail(settingsEmail)
+      }
+
+      const telegramPayload: Record<string, string> = {}
+      if (settingsTelegramToken) telegramPayload.telegram_bot_token = settingsTelegramToken
+      if (settingsTelegramChatId) telegramPayload.telegram_chat_id = settingsTelegramChatId
+      if (Object.keys(telegramPayload).length > 0) {
+        await api.put('/settings', telegramPayload)
+      }
+
+      toast('success', 'Parametres enregistres')
       setSettingsOpen(false)
       await dashboard.refresh()
     } catch (err) {
@@ -245,7 +269,19 @@ export default function App() {
     } finally {
       setSettingsSaving(false)
     }
-  }, [settingsEmail, settingsPassword, dashboard, toast])
+  }, [settingsEmail, settingsPassword, settingsTelegramToken, settingsTelegramChatId, dashboard, toast])
+
+  const handleTelegramTest = useCallback(async () => {
+    setTelegramTesting(true)
+    try {
+      await api.post('/telegram/test', {})
+      toast('success', 'Message test envoye')
+    } catch (err) {
+      toast('error', 'Erreur Telegram', err instanceof Error ? err.message : 'Erreur inconnue')
+    } finally {
+      setTelegramTesting(false)
+    }
+  }, [toast])
 
   // --- Advance days ---
   const handleAdvanceDaysConfirm = useCallback(() => {
@@ -484,6 +520,36 @@ export default function App() {
                   placeholder="Mot de passe DoInSport"
                   className="w-full px-3 py-2.5 border border-slate-200 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100 rounded-lg text-base min-h-12 sm:text-sm sm:min-h-0 focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500"
                 />
+              </div>
+
+              <div className="border-t border-slate-200 dark:border-slate-700 pt-4 mt-4">
+                <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 mb-3">Telegram</h3>
+
+                <div className="mb-4">
+                  <label className="block text-xs font-semibold text-slate-500 mb-1.5">Token du bot</label>
+                  <input
+                    type="password"
+                    value={settingsTelegramToken}
+                    onChange={(e) => setSettingsTelegramToken(e.target.value)}
+                    placeholder="Laisser vide pour ne pas modifier"
+                    className="w-full px-3 py-2.5 border border-slate-200 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100 rounded-lg text-base min-h-12 sm:text-sm sm:min-h-0 focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500"
+                  />
+                </div>
+
+                <div className="mb-4">
+                  <label className="block text-xs font-semibold text-slate-500 mb-1.5">Chat ID</label>
+                  <input
+                    type="text"
+                    value={settingsTelegramChatId}
+                    onChange={(e) => setSettingsTelegramChatId(e.target.value)}
+                    placeholder="Ex: 123456789"
+                    className="w-full px-3 py-2.5 border border-slate-200 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100 rounded-lg text-base min-h-12 sm:text-sm sm:min-h-0 focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500"
+                  />
+                </div>
+
+                <Button variant="secondary" size="sm" onClick={handleTelegramTest} loading={telegramTesting}>
+                  Tester
+                </Button>
               </div>
 
               <div className="flex flex-col-reverse gap-2.5 mt-6 sm:flex-row sm:justify-end">
