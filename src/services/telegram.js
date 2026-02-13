@@ -31,12 +31,16 @@ function formatTime(time) {
   return time.replace(':', 'h');
 }
 
+function esc(str) {
+  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
 function buildMessage({ targetDate, targetTime, bookedTime, playground, status, errorMessage, duration }) {
   const label = STATUS_LABELS[status] || status;
-  const lines = [`<b>${label}</b>`, ''];
+  const lines = [`<b>${esc(label)}</b>`, ''];
 
-  if (playground) lines.push(`Terrain : ${playground}`);
-  if (targetDate) lines.push(`Date : ${formatDate(targetDate)}`);
+  if (playground) lines.push(`Terrain : ${esc(playground)}`);
+  if (targetDate) lines.push(`Date : ${esc(formatDate(targetDate))}`);
 
   if (bookedTime && bookedTime !== targetTime) {
     lines.push(`Heure : ${formatTime(bookedTime)} (cible : ${formatTime(targetTime)})`);
@@ -47,7 +51,7 @@ function buildMessage({ targetDate, targetTime, bookedTime, playground, status, 
   }
 
   if (duration) lines.push(`Duree : ${duration} min`);
-  if (errorMessage) lines.push(`Erreur : ${errorMessage}`);
+  if (errorMessage) lines.push(`Erreur : ${esc(errorMessage)}`);
 
   return lines.join('\n');
 }

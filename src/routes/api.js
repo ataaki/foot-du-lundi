@@ -129,11 +129,11 @@ router.put('/settings', (req, res) => {
   }
 
   if (telegram_bot_token !== undefined) {
-    db.setSetting('telegram_bot_token', telegram_bot_token);
+    db.setSetting('telegram_bot_token', telegram_bot_token.trim());
   }
 
   if (telegram_chat_id !== undefined) {
-    db.setSetting('telegram_chat_id', telegram_chat_id);
+    db.setSetting('telegram_chat_id', telegram_chat_id.trim());
   }
 
   res.json({ success: true });

@@ -254,12 +254,9 @@ export default function App() {
         setCredentialsEmail(settingsEmail)
       }
 
-      const telegramPayload: Record<string, string> = {}
+      const telegramPayload: Record<string, string> = { telegram_chat_id: settingsTelegramChatId }
       if (settingsTelegramToken) telegramPayload.telegram_bot_token = settingsTelegramToken
-      if (settingsTelegramChatId) telegramPayload.telegram_chat_id = settingsTelegramChatId
-      if (Object.keys(telegramPayload).length > 0) {
-        await api.put('/settings', telegramPayload)
-      }
+      await api.put('/settings', telegramPayload)
 
       toast('success', 'Parametres enregistres')
       setSettingsOpen(false)
