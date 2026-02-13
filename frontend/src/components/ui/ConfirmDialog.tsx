@@ -35,7 +35,7 @@ export default function ConfirmDialog({
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm" />
+          <div className="fixed inset-0 bg-slate-900/40 dark:bg-black/60 backdrop-blur-sm" />
         </TransitionChild>
 
         <div className="fixed inset-0 flex items-end justify-center p-4 sm:items-center sm:p-5">
@@ -48,9 +48,9 @@ export default function ConfirmDialog({
             leaveFrom="opacity-100 translate-y-0 sm:scale-100"
             leaveTo="opacity-0 translate-y-full sm:translate-y-0 sm:scale-95"
           >
-            <DialogPanel className="w-full max-w-md bg-white rounded-2xl rounded-b-none sm:rounded-b-2xl p-7 shadow-xl">
-              <DialogTitle className="text-lg font-bold text-slate-900">{title}</DialogTitle>
-              <p className="text-sm text-slate-500 mt-2 leading-relaxed">{message}</p>
+            <DialogPanel className="w-full max-w-md bg-white dark:bg-slate-800 rounded-2xl rounded-b-none sm:rounded-b-2xl p-7 shadow-xl">
+              <DialogTitle className="text-lg font-bold text-slate-900 dark:text-slate-100">{title}</DialogTitle>
+              <p className="text-sm text-slate-500 dark:text-slate-400 mt-2 leading-relaxed">{message}</p>
               <div className="flex flex-col-reverse gap-2.5 mt-6 sm:flex-row sm:justify-end">
                 <Button variant="secondary" onClick={onClose}>
                   Annuler

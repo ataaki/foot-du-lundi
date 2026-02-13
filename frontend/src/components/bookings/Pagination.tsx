@@ -12,7 +12,7 @@ export default function Pagination({ page, totalPages, onPageChange }: Paginatio
   const pages = generatePageNumbers(page, totalPages)
 
   return (
-    <div className="flex items-center justify-center gap-2 mt-4 p-4 bg-slate-50 rounded-lg flex-wrap sm:gap-3">
+    <div className="flex items-center justify-center gap-2 mt-4 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-lg flex-wrap sm:gap-3">
       <Button variant="secondary" size="sm" disabled={page === 1} onClick={() => onPageChange(1)}>⏮</Button>
       <Button variant="secondary" size="sm" disabled={page === 1} onClick={() => onPageChange(page - 1)}>← Préc</Button>
 
@@ -27,8 +27,8 @@ export default function Pagination({ page, totalPages, onPageChange }: Paginatio
               onClick={() => onPageChange(p as number)}
               className={`min-w-9 h-9 px-2 border rounded-lg text-sm font-medium transition cursor-pointer
                 ${p === page
-                  ? 'bg-slate-900 text-white border-slate-900'
-                  : 'bg-white text-slate-700 border-slate-200 hover:border-slate-900 hover:text-slate-900'
+                  ? 'bg-slate-900 text-white border-slate-900 dark:bg-slate-100 dark:text-slate-900 dark:border-slate-100'
+                  : 'bg-white text-slate-700 border-slate-200 hover:border-slate-900 hover:text-slate-900 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-600 dark:hover:border-slate-100 dark:hover:text-slate-100'
                 }`}
             >
               {p}

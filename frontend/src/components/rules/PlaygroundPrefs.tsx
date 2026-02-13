@@ -83,7 +83,7 @@ function SortableItem({ item, onToggle }: { item: { id: string; checked: boolean
     <div
       ref={setNodeRef}
       style={style}
-      className={`flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-md px-3 py-2.5 text-sm select-none transition-colors hover:border-slate-300 sm:gap-1.5 sm:px-2.5 sm:py-1.5 ${isDragging ? 'opacity-40' : ''}`}
+      className={`flex items-center gap-2 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-md px-3 py-2.5 text-sm select-none transition-colors hover:border-slate-300 dark:hover:border-slate-500 sm:gap-1.5 sm:px-2.5 sm:py-1.5 ${isDragging ? 'opacity-40' : ''}`}
     >
       <span {...attributes} {...listeners} className="text-slate-400 text-sm p-1 cursor-grab sm:text-[10px] sm:p-0">
         ⠿

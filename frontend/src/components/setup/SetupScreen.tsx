@@ -37,9 +37,9 @@ export default function SetupScreen({ onSuccess }: SetupScreenProps) {
 
       <form
         onSubmit={handleSubmit}
-        className="relative bg-white rounded-2xl rounded-b-none p-6 max-w-md w-full shadow-2xl animate-[modalIn_0.4s_ease-out] sm:rounded-b-2xl sm:p-9"
+        className="relative bg-white dark:bg-slate-800 rounded-2xl rounded-b-none p-6 max-w-md w-full shadow-2xl animate-[modalIn_0.4s_ease-out] sm:rounded-b-2xl sm:p-9"
       >
-        <h1 className="text-[22px] font-bold text-slate-900 mb-2">Foot Du Lundi</h1>
+        <h1 className="text-[22px] font-bold text-slate-900 dark:text-slate-100 mb-2">Foot Du Lundi</h1>
         <p className="text-sm text-slate-500 mb-6 leading-relaxed">
           Connectez-vous avec vos identifiants DoInSport pour commencer.
         </p>
@@ -52,7 +52,7 @@ export default function SetupScreen({ onSuccess }: SetupScreenProps) {
             onChange={(e) => setEmail(e.target.value)}
             placeholder="votre@email.com"
             autoComplete="email"
-            className="w-full px-3 py-2.5 border border-slate-200 rounded-lg text-base min-h-12 sm:text-sm sm:min-h-0 focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500"
+            className="w-full px-3 py-2.5 border border-slate-200 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100 rounded-lg text-base min-h-12 sm:text-sm sm:min-h-0 focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500"
           />
         </div>
 
@@ -64,12 +64,12 @@ export default function SetupScreen({ onSuccess }: SetupScreenProps) {
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Mot de passe DoInSport"
             autoComplete="current-password"
-            className="w-full px-3 py-2.5 border border-slate-200 rounded-lg text-base min-h-12 sm:text-sm sm:min-h-0 focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500"
+            className="w-full px-3 py-2.5 border border-slate-200 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100 rounded-lg text-base min-h-12 sm:text-sm sm:min-h-0 focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500"
           />
         </div>
 
         {error && (
-          <div className="bg-red-50 text-red-700 px-3.5 py-2.5 rounded-lg text-sm mb-3">{error}</div>
+          <div className="bg-red-50 dark:bg-red-500/15 text-red-700 dark:text-red-400 px-3.5 py-2.5 rounded-lg text-sm mb-3">{error}</div>
         )}
 
         <Button variant="primary" type="submit" loading={loading} className="w-full mt-2 min-h-11 text-base">

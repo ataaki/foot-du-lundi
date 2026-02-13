@@ -44,9 +44,9 @@ export default function LogsTable({ logs, onDelete }: LogsTableProps) {
 
   if (!logs.length) {
     return (
-      <div className="bg-white border border-dashed border-slate-300 rounded-xl">
+      <div className="bg-white dark:bg-slate-800 border border-dashed border-slate-300 dark:border-slate-600 rounded-xl">
         <div className="text-center py-10">
-          <p className="text-sm font-medium text-slate-600">Aucun historique</p>
+          <p className="text-sm font-medium text-slate-600 dark:text-slate-300">Aucun historique</p>
           <p className="text-xs text-slate-400 mt-1">Les tentatives de reservation apparaitront ici.</p>
         </div>
       </div>
@@ -54,9 +54,9 @@ export default function LogsTable({ logs, onDelete }: LogsTableProps) {
   }
 
   return (
-    <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+    <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-sm overflow-hidden">
       {selectedIds.size > 0 && (
-        <div className="px-4 py-2 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
+        <div className="px-4 py-2 bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
           <span className="text-xs text-slate-500">{selectedIds.size} sélectionné{selectedIds.size > 1 ? 's' : ''}</span>
           <Button variant="danger" size="sm" onClick={handleDelete} loading={deleting}>
             Supprimer ({selectedIds.size})
@@ -66,7 +66,7 @@ export default function LogsTable({ logs, onDelete }: LogsTableProps) {
 
       {/* Mobile cards */}
       <div className="sm:hidden">
-        <div className="px-4 py-2 bg-slate-50 border-b border-slate-200 flex items-center gap-2">
+        <div className="px-4 py-2 bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-700 flex items-center gap-2">
           <input
             type="checkbox"
             checked={allChecked}
@@ -75,7 +75,7 @@ export default function LogsTable({ logs, onDelete }: LogsTableProps) {
           />
           <span className="text-xs text-slate-400">Tout sélectionner</span>
         </div>
-        <div className="divide-y divide-slate-100">
+        <div className="divide-y divide-slate-100 dark:divide-slate-700">
           {logs.map((log) => (
             <div key={log.id} className="p-4 flex gap-3">
               <input
@@ -96,7 +96,7 @@ export default function LogsTable({ logs, onDelete }: LogsTableProps) {
                     {STATUS_LABELS[log.status] || log.status}
                   </Badge>
                 </div>
-                <div className="text-sm font-semibold text-slate-700">
+                <div className="text-sm font-semibold text-slate-700 dark:text-slate-300">
                   {formatDate(log.target_date)} à {log.target_time}
                 </div>
                 <div className="text-xs text-slate-500 mt-0.5">
@@ -114,7 +114,7 @@ export default function LogsTable({ logs, onDelete }: LogsTableProps) {
       <div className="hidden sm:block overflow-x-auto">
         <table className="w-full text-sm min-w-[600px]">
           <thead>
-            <tr className="bg-slate-50 border-b border-slate-200">
+            <tr className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-700">
               <th className="w-9 text-center px-3 py-2.5">
                 <input
                   type="checkbox"
@@ -134,7 +134,7 @@ export default function LogsTable({ logs, onDelete }: LogsTableProps) {
           </thead>
           <tbody>
             {logs.map((log) => (
-              <tr key={log.id} className="border-t border-slate-100 hover:bg-slate-50 transition-colors">
+              <tr key={log.id} className="border-t border-slate-100 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors">
                 <td className="text-center px-3 py-2.5">
                   <input
                     type="checkbox"
@@ -148,7 +148,7 @@ export default function LogsTable({ logs, onDelete }: LogsTableProps) {
                     {log.rule_id != null ? 'Auto' : 'Manuel'}
                   </Badge>
                 </td>
-                <td className="px-4 py-2.5 text-slate-700">{formatDate(log.target_date)}</td>
+                <td className="px-4 py-2.5 text-slate-700 dark:text-slate-300">{formatDate(log.target_date)}</td>
                 <td className="px-4 py-2.5 text-slate-500">{log.target_time}</td>
                 <td className="px-4 py-2.5 text-slate-500">{log.booked_time || '-'}</td>
                 <td className="px-4 py-2.5 text-slate-500">{log.playground || '-'}</td>

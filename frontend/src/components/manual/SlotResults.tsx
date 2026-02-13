@@ -27,20 +27,20 @@ export default function SlotResults({ slots, showDuration, onBook }: SlotResults
   return (
     <>
       {/* Mobile cards */}
-      <div className="mt-3.5 sm:hidden divide-y divide-slate-100 border border-slate-200 rounded-xl overflow-hidden">
+      <div className="mt-3.5 sm:hidden divide-y divide-slate-100 dark:divide-slate-700 border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden">
         {slots.map((s) => {
           const key = `${s.startAt}-${s.playground.name}-${s.duration}`
           return (
             <div key={key} className="p-4">
               <div className="flex items-center justify-between mb-2">
-                <span className="font-semibold text-slate-900 text-base">{s.startAt}</span>
-                <span className="text-sm text-slate-500">{formatPrice(s.price)}</span>
+                <span className="font-semibold text-slate-900 dark:text-slate-100 text-base">{s.startAt}</span>
+                <span className="text-sm text-slate-500 dark:text-slate-400">{formatPrice(s.price)}</span>
               </div>
-              <div className="flex items-center gap-3 text-sm text-slate-500 mb-3">
+              <div className="flex items-center gap-3 text-sm text-slate-500 dark:text-slate-400 mb-3">
                 <span>{s.playground.name}</span>
                 {showDuration && (
                   <>
-                    <span className="text-slate-300">·</span>
+                    <span className="text-slate-300 dark:text-slate-600">·</span>
                     <span>{formatDuration(s.duration / 60)}</span>
                   </>
                 )}
@@ -63,7 +63,7 @@ export default function SlotResults({ slots, showDuration, onBook }: SlotResults
       <div className="mt-3.5 hidden sm:block overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="bg-slate-50 border-b border-slate-200">
+            <tr className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-700">
               <th className="text-left px-4 py-2.5 text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Heure</th>
               <th className="text-left px-4 py-2.5 text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Terrain</th>
               {showDuration && <th className="text-left px-4 py-2.5 text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Durée</th>}
@@ -75,11 +75,11 @@ export default function SlotResults({ slots, showDuration, onBook }: SlotResults
             {slots.map((s) => {
               const key = `${s.startAt}-${s.playground.name}-${s.duration}`
               return (
-                <tr key={key} className="border-t border-slate-100 hover:bg-slate-50 transition-colors">
-                  <td className="px-4 py-2.5 font-semibold text-slate-700">{s.startAt}</td>
-                  <td className="px-4 py-2.5 text-slate-500">{s.playground.name}</td>
-                  {showDuration && <td className="px-4 py-2.5 text-slate-500">{formatDuration(s.duration / 60)}</td>}
-                  <td className="px-4 py-2.5 text-slate-500">{formatPrice(s.price)}</td>
+                <tr key={key} className="border-t border-slate-100 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors">
+                  <td className="px-4 py-2.5 font-semibold text-slate-700 dark:text-slate-300">{s.startAt}</td>
+                  <td className="px-4 py-2.5 text-slate-500 dark:text-slate-400">{s.playground.name}</td>
+                  {showDuration && <td className="px-4 py-2.5 text-slate-500 dark:text-slate-400">{formatDuration(s.duration / 60)}</td>}
+                  <td className="px-4 py-2.5 text-slate-500 dark:text-slate-400">{formatPrice(s.price)}</td>
                   <td className="px-4 py-2.5">
                     <Button variant="success" size="sm" onClick={() => handleBook(s)} loading={bookingSlot === key}>
                       Réserver

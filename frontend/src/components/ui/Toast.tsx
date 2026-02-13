@@ -25,18 +25,18 @@ export default function ToastContainer() {
       {toasts.map((t) => (
         <div
           key={t.id}
-          className={`pointer-events-auto flex items-start gap-3 p-3.5 rounded-xl bg-white border border-slate-200 shadow-lg border-l-4 ${borderColors[t.type]} animate-[slideIn_0.3s_ease-out]`}
+          className={`pointer-events-auto flex items-start gap-3 p-3.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-lg border-l-4 ${borderColors[t.type]} animate-[slideIn_0.3s_ease-out]`}
         >
           <span className={`w-2.5 h-2.5 rounded-full shrink-0 mt-1 ${dotColors[t.type]}`} />
           <div className="flex-1 min-w-0">
             <div className="font-semibold text-sm">{t.title}</div>
             {t.message && (
-              <div className="text-xs text-slate-500 mt-0.5 break-words">{t.message}</div>
+              <div className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 break-words">{t.message}</div>
             )}
           </div>
           <button
             onClick={() => dismiss(t.id)}
-            className="text-slate-400 hover:text-slate-600 text-lg leading-none shrink-0 cursor-pointer"
+            className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-lg leading-none shrink-0 cursor-pointer"
           >
             ×
           </button>

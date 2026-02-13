@@ -29,16 +29,16 @@ export default function BookingsList({ data, loading, status, page, onLoad, onCa
   }
 
   return (
-    <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+    <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-sm overflow-hidden">
       <div className="flex items-center justify-between px-4 pt-3">
         <TabGroup selectedIndex={tabIndex} onChange={(i) => onLoad(i === 0 ? 'upcoming' : 'past', 1)}>
-          <TabList className="flex gap-2 border-b-2 border-slate-100 pb-0">
+          <TabList className="flex gap-2 border-b-2 border-slate-100 dark:border-slate-700 pb-0">
             {['À venir', 'Passées'].map((label) => (
               <Tab
                 key={label}
                 className={({ selected }) =>
                   `px-4 py-2.5 text-sm font-medium border-b-2 -mb-[2px] transition cursor-pointer focus:outline-none
-                  ${selected ? 'text-slate-900 border-slate-900 font-semibold' : 'text-slate-500 border-transparent hover:text-slate-700'}`
+                  ${selected ? 'text-slate-900 dark:text-slate-100 border-slate-900 dark:border-slate-100 font-semibold' : 'text-slate-500 dark:text-slate-400 border-transparent hover:text-slate-700 dark:hover:text-slate-200'}`
                 }
               >
                 {label}
@@ -56,7 +56,7 @@ export default function BookingsList({ data, loading, status, page, onLoad, onCa
         </div>
       ) : !data?.bookings?.length ? (
         <div className="text-center py-10">
-          <p className="text-sm font-medium text-slate-600">
+          <p className="text-sm font-medium text-slate-600 dark:text-slate-300">
             {status === 'upcoming' ? 'Aucune reservation a venir' : 'Aucune reservation passee'}
           </p>
           <p className="text-xs text-slate-400 mt-1">
@@ -65,16 +65,16 @@ export default function BookingsList({ data, loading, status, page, onLoad, onCa
         </div>
       ) : (
         <>
-          <div className="px-4 py-2 text-xs text-slate-400 bg-slate-50">
+          <div className="px-4 py-2 text-xs text-slate-400 bg-slate-50 dark:bg-slate-800/50">
             Page {page} / {data.totalPages} · {data.total} réservation{data.total > 1 ? 's' : ''}
           </div>
 
           {/* Mobile cards */}
-          <div className="sm:hidden divide-y divide-slate-100">
+          <div className="sm:hidden divide-y divide-slate-100 dark:divide-slate-700">
             {data.bookings.map((b) => (
               <div key={b.id} className={`p-4 ${b.canceled ? 'opacity-60' : ''}`}>
                 <div className="flex items-center justify-between mb-2">
-                  <span className="font-semibold text-slate-900 text-sm">{formatDate(b.date)}</span>
+                  <span className="font-semibold text-slate-900 dark:text-slate-100 text-sm">{formatDate(b.date)}</span>
                   {b.canceled ? (
                     <Badge variant="error">Annulée</Badge>
                   ) : b.confirmed ? (
@@ -86,19 +86,19 @@ export default function BookingsList({ data, loading, status, page, onLoad, onCa
                 <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-sm">
                   <div>
                     <span className="text-slate-400 text-xs">Début</span>
-                    <p className="text-slate-700">{formatTime(b.startAt)}</p>
+                    <p className="text-slate-700 dark:text-slate-300">{formatTime(b.startAt)}</p>
                   </div>
                   <div>
                     <span className="text-slate-400 text-xs">Durée</span>
-                    <p className="text-slate-700">{formatDuration((new Date(b.endAt).getTime() - new Date(b.startAt).getTime()) / 60000)}</p>
+                    <p className="text-slate-700 dark:text-slate-300">{formatDuration((new Date(b.endAt).getTime() - new Date(b.startAt).getTime()) / 60000)}</p>
                   </div>
                   <div>
                     <span className="text-slate-400 text-xs">Terrain</span>
-                    <p className="text-slate-700">{b.playground || '-'}</p>
+                    <p className="text-slate-700 dark:text-slate-300">{b.playground || '-'}</p>
                   </div>
                   <div>
                     <span className="text-slate-400 text-xs">Prix</span>
-                    <p className="text-slate-700">{formatPrice(b.pricePerParticipant)}/pers</p>
+                    <p className="text-slate-700 dark:text-slate-300">{formatPrice(b.pricePerParticipant)}/pers</p>
                   </div>
                 </div>
                 {status === 'upcoming' && !b.canceled && (
@@ -120,7 +120,7 @@ export default function BookingsList({ data, loading, status, page, onLoad, onCa
           <div className="hidden sm:block overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="bg-slate-50 border-b border-slate-200">
+                <tr className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-700">
                   <th className="text-left px-4 py-2.5 text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Date</th>
                   <th className="text-left px-4 py-2.5 text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Début</th>
                   <th className="text-left px-4 py-2.5 text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Durée</th>
@@ -134,13 +134,13 @@ export default function BookingsList({ data, loading, status, page, onLoad, onCa
                 {data.bookings.map((b) => (
                   <tr
                     key={b.id}
-                    className={`border-t border-slate-100 hover:bg-slate-50 transition-colors ${b.canceled ? 'opacity-60 [&_td]:line-through' : ''}`}
+                    className={`border-t border-slate-100 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors ${b.canceled ? 'opacity-60 [&_td]:line-through' : ''}`}
                   >
-                    <td className="px-4 py-2.5 font-semibold text-slate-700">{formatDate(b.date)}</td>
-                    <td className="px-4 py-2.5 text-slate-500">{formatTime(b.startAt)}</td>
-                    <td className="px-4 py-2.5 text-slate-500">{formatDuration((new Date(b.endAt).getTime() - new Date(b.startAt).getTime()) / 60000)}</td>
-                    <td className="px-4 py-2.5 text-slate-500">{b.playground || '-'}</td>
-                    <td className="px-4 py-2.5 text-slate-500">{formatPrice(b.pricePerParticipant)}/pers</td>
+                    <td className="px-4 py-2.5 font-semibold text-slate-700 dark:text-slate-300">{formatDate(b.date)}</td>
+                    <td className="px-4 py-2.5 text-slate-500 dark:text-slate-400">{formatTime(b.startAt)}</td>
+                    <td className="px-4 py-2.5 text-slate-500 dark:text-slate-400">{formatDuration((new Date(b.endAt).getTime() - new Date(b.startAt).getTime()) / 60000)}</td>
+                    <td className="px-4 py-2.5 text-slate-500 dark:text-slate-400">{b.playground || '-'}</td>
+                    <td className="px-4 py-2.5 text-slate-500 dark:text-slate-400">{formatPrice(b.pricePerParticipant)}/pers</td>
                     <td className="px-4 py-2.5">
                       {b.canceled ? (
                         <Badge variant="error">Annulée</Badge>

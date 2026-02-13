@@ -12,7 +12,7 @@ export default function Toggle({ enabled, onChange, label }: ToggleProps) {
       checked={enabled}
       onChange={onChange}
       className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200
-        ${enabled ? 'bg-emerald-500' : 'bg-slate-300'}`}
+        ${enabled ? 'bg-emerald-500' : 'bg-slate-300 dark:bg-slate-600'}`}
     >
       {label && <span className="sr-only">{label}</span>}
       <span

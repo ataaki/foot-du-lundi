@@ -255,7 +255,7 @@ export default function App() {
   // --- Loading state ---
   if (!credentialsChecked) {
     return (
-      <div className="flex items-center justify-center min-h-dvh bg-slate-50">
+      <div className="flex items-center justify-center min-h-dvh bg-slate-50 dark:bg-slate-900">
         <Spinner size="lg" />
       </div>
     )
@@ -277,7 +277,7 @@ export default function App() {
   // --- Dashboard loading ---
   if (dashboard.loading && !dashboard.data) {
     return (
-      <div className="flex items-center justify-center min-h-dvh bg-slate-50">
+      <div className="flex items-center justify-center min-h-dvh bg-slate-50 dark:bg-slate-900">
         <div className="text-center">
           <Spinner size="lg" className="mx-auto" />
           <p className="text-slate-400 text-sm mt-3">Chargement du tableau de bord...</p>
@@ -290,10 +290,10 @@ export default function App() {
   // --- Dashboard error ---
   if (dashboard.error && !dashboard.data) {
     return (
-      <div className="flex items-center justify-center min-h-dvh bg-slate-50">
+      <div className="flex items-center justify-center min-h-dvh bg-slate-50 dark:bg-slate-900">
         <div className="text-center">
           <p className="text-red-500 font-semibold">Erreur</p>
-          <p className="text-slate-500 text-sm mt-1">{dashboard.error}</p>
+          <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">{dashboard.error}</p>
           <Button variant="primary" onClick={dashboard.refresh} className="mt-4">
             Reessayer
           </Button>
@@ -310,7 +310,7 @@ export default function App() {
   const activeRulesCount = dashData.rules.filter((r) => r.enabled).length
 
   return (
-    <div className="min-h-dvh bg-slate-50">
+    <div className="min-h-dvh bg-slate-50 dark:bg-slate-900">
       <div className="max-w-5xl mx-auto px-3 pb-6 sm:px-5 sm:pb-10">
         <Header onOpenSettings={handleOpenSettings} />
 
@@ -322,7 +322,7 @@ export default function App() {
         />
 
         {/* Info note */}
-        <div className="bg-sky-50 border border-sky-200 rounded-lg p-3.5 mb-4 text-sky-900 text-xs leading-relaxed sm:p-4 sm:mb-6 sm:text-[13px]">
+        <div className="bg-sky-50 dark:bg-sky-500/10 border border-sky-200 dark:border-sky-500/20 rounded-lg p-3.5 mb-4 text-sky-900 dark:text-sky-300 text-xs leading-relaxed sm:p-4 sm:mb-6 sm:text-[13px]">
           <p className="font-semibold mb-1.5">Fonctionnement du bot</p>
           <ul className="list-disc pl-4 space-y-0.5">
             <li>Le scheduler se declenche chaque jour a <strong>00:00</strong> et reserve les creneaux qui ouvrent a <strong>J-{config.advance_days}</strong></li>
@@ -335,7 +335,7 @@ export default function App() {
         <section className="mb-6 sm:mb-8">
           <div className="flex items-center justify-between mb-3.5">
             <div>
-              <h2 className="text-base font-bold text-slate-900 sm:text-lg">Regles de reservation</h2>
+              <h2 className="text-base font-bold text-slate-900 dark:text-slate-100 sm:text-lg">Regles de reservation</h2>
               <p className="text-xs text-slate-400 mt-0.5">Configurez vos reservations automatiques</p>
             </div>
             <Button variant="primary" size="sm" onClick={handleOpenNewRule}>
@@ -343,8 +343,8 @@ export default function App() {
             </Button>
           </div>
           {dashData.rules.length === 0 ? (
-            <div className="bg-white border border-dashed border-slate-300 rounded-xl p-10 text-center">
-              <p className="text-sm font-medium text-slate-600">Aucune regle configuree</p>
+            <div className="bg-white dark:bg-slate-800 border border-dashed border-slate-300 dark:border-slate-600 rounded-xl p-10 text-center">
+              <p className="text-sm font-medium text-slate-600 dark:text-slate-300">Aucune regle configuree</p>
               <p className="text-xs text-slate-400 mt-1">Cliquez sur "Nouvelle regle" pour commencer.</p>
             </div>
           ) : (
@@ -370,7 +370,7 @@ export default function App() {
         {/* Manual booking section */}
         <section className="mb-6 sm:mb-8">
           <div className="mb-3.5">
-            <h2 className="text-base font-bold text-slate-900 sm:text-lg">Reservation manuelle</h2>
+            <h2 className="text-base font-bold text-slate-900 dark:text-slate-100 sm:text-lg">Reservation manuelle</h2>
             <p className="text-xs text-slate-400 mt-0.5">Recherchez et reservez un creneau specifique</p>
           </div>
           <SlotSearch loading={slotsHook.loading} onSearch={handleSlotSearch} />
@@ -384,7 +384,7 @@ export default function App() {
         {/* Bookings section */}
         <section className="mb-6 sm:mb-8">
           <div className="mb-3.5">
-            <h2 className="text-base font-bold text-slate-900 sm:text-lg">Reservations</h2>
+            <h2 className="text-base font-bold text-slate-900 dark:text-slate-100 sm:text-lg">Reservations</h2>
             <p className="text-xs text-slate-400 mt-0.5">Vos reservations a venir et passees</p>
           </div>
           <BookingsList
@@ -401,7 +401,7 @@ export default function App() {
         {/* Logs section */}
         <section className="mb-6 sm:mb-8">
           <div className="mb-3.5">
-            <h2 className="text-base font-bold text-slate-900 sm:text-lg">Historique</h2>
+            <h2 className="text-base font-bold text-slate-900 dark:text-slate-100 sm:text-lg">Historique</h2>
             <p className="text-xs text-slate-400 mt-0.5">Journal des tentatives de reservation</p>
           </div>
           <LogsTable logs={dashData.recent_logs} onDelete={handleDeleteLogs} />
@@ -459,10 +459,10 @@ export default function App() {
       {/* Settings modal */}
       {settingsOpen && (
         <div className="fixed inset-0 z-[10000]">
-          <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm" onClick={() => setSettingsOpen(false)} />
+          <div className="fixed inset-0 bg-slate-900/40 dark:bg-black/60 backdrop-blur-sm" onClick={() => setSettingsOpen(false)} />
           <div className="fixed inset-0 flex items-end justify-center p-4 sm:items-center sm:p-5">
-            <div className="relative w-full max-w-md bg-white rounded-2xl rounded-b-none sm:rounded-b-2xl p-7 shadow-xl">
-              <h2 className="text-lg font-bold text-slate-900 mb-5">Parametres</h2>
+            <div className="relative w-full max-w-md bg-white dark:bg-slate-800 rounded-2xl rounded-b-none sm:rounded-b-2xl p-7 shadow-xl">
+              <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100 mb-5">Parametres</h2>
 
               <div className="mb-4">
                 <label className="block text-xs font-semibold text-slate-500 mb-1.5">Email</label>
@@ -471,7 +471,7 @@ export default function App() {
                   value={settingsEmail}
                   onChange={(e) => setSettingsEmail(e.target.value)}
                   placeholder="votre@email.com"
-                  className="w-full px-3 py-2.5 border border-slate-200 rounded-lg text-base min-h-12 sm:text-sm sm:min-h-0 focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500"
+                  className="w-full px-3 py-2.5 border border-slate-200 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100 rounded-lg text-base min-h-12 sm:text-sm sm:min-h-0 focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500"
                 />
               </div>
 
@@ -482,7 +482,7 @@ export default function App() {
                   value={settingsPassword}
                   onChange={(e) => setSettingsPassword(e.target.value)}
                   placeholder="Mot de passe DoInSport"
-                  className="w-full px-3 py-2.5 border border-slate-200 rounded-lg text-base min-h-12 sm:text-sm sm:min-h-0 focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500"
+                  className="w-full px-3 py-2.5 border border-slate-200 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100 rounded-lg text-base min-h-12 sm:text-sm sm:min-h-0 focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500"
                 />
               </div>
 

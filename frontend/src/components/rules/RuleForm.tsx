@@ -58,7 +58,7 @@ export default function RuleForm({ open, onClose, onSave, rule, config }: RuleFo
           enter="ease-out duration-200" enterFrom="opacity-0" enterTo="opacity-100"
           leave="ease-in duration-150" leaveFrom="opacity-100" leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm" />
+          <div className="fixed inset-0 bg-slate-900/40 dark:bg-black/60 backdrop-blur-sm" />
         </TransitionChild>
 
         <div className="fixed inset-0 flex items-end justify-center p-4 sm:items-center sm:p-5">
@@ -71,7 +71,7 @@ export default function RuleForm({ open, onClose, onSave, rule, config }: RuleFo
             leaveFrom="opacity-100 translate-y-0 sm:scale-100"
             leaveTo="opacity-0 translate-y-full sm:translate-y-0 sm:scale-95"
           >
-            <DialogPanel className="w-full max-w-lg bg-white rounded-2xl rounded-b-none sm:rounded-b-2xl p-7 shadow-xl">
+            <DialogPanel className="w-full max-w-lg bg-white dark:bg-slate-800 rounded-2xl rounded-b-none sm:rounded-b-2xl p-7 shadow-xl">
               <DialogTitle className="text-lg font-bold mb-5">
                 {rule ? 'Modifier la règle' : 'Ajouter une règle'}
               </DialogTitle>
@@ -82,7 +82,7 @@ export default function RuleForm({ open, onClose, onSave, rule, config }: RuleFo
                   <select
                     value={dayOfWeek}
                     onChange={(e) => setDayOfWeek(Number(e.target.value))}
-                    className="w-full px-3 py-2.5 border border-slate-200 rounded-lg text-base min-h-12 sm:text-sm sm:min-h-0 bg-white focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500"
+                    className="w-full px-3 py-2.5 border border-slate-200 dark:border-slate-600 rounded-lg text-base min-h-12 sm:text-sm sm:min-h-0 bg-white dark:bg-slate-700 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500"
                   >
                     {DAY_OPTIONS.map((d) => (
                       <option key={d.value} value={d.value}>{d.label}</option>
@@ -95,7 +95,7 @@ export default function RuleForm({ open, onClose, onSave, rule, config }: RuleFo
                     type="time"
                     value={targetTime}
                     onChange={(e) => setTargetTime(e.target.value)}
-                    className="w-full px-3 py-2.5 border border-slate-200 rounded-lg text-base min-h-12 sm:text-sm sm:min-h-0 focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500"
+                    className="w-full px-3 py-2.5 border border-slate-200 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100 rounded-lg text-base min-h-12 sm:text-sm sm:min-h-0 focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500"
                   />
                 </div>
                 <div>
@@ -103,7 +103,7 @@ export default function RuleForm({ open, onClose, onSave, rule, config }: RuleFo
                   <select
                     value={duration}
                     onChange={(e) => setDuration(Number(e.target.value))}
-                    className="w-full px-3 py-2.5 border border-slate-200 rounded-lg text-base min-h-12 sm:text-sm sm:min-h-0 bg-white focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500"
+                    className="w-full px-3 py-2.5 border border-slate-200 dark:border-slate-600 rounded-lg text-base min-h-12 sm:text-sm sm:min-h-0 bg-white dark:bg-slate-700 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500"
                   >
                     {DURATION_OPTIONS.map((d) => (
                       <option key={d.value} value={d.value}>{d.label}</option>

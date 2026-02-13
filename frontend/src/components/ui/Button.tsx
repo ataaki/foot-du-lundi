@@ -11,12 +11,12 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const variantClasses: Record<Variant, string> = {
-  primary: 'bg-slate-900 text-white hover:bg-slate-800',
-  secondary: 'bg-slate-50 text-slate-600 border border-slate-200 hover:bg-slate-100 hover:border-slate-300',
+  primary: 'bg-slate-900 text-white hover:bg-slate-800 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-slate-200',
+  secondary: 'bg-slate-50 text-slate-600 border border-slate-200 hover:bg-slate-100 hover:border-slate-300 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-600 dark:hover:bg-slate-700 dark:hover:border-slate-500',
   danger: 'bg-red-500 text-white hover:bg-red-600',
   success: 'bg-emerald-500 text-white hover:bg-emerald-600',
-  ghost: 'text-slate-500 hover:text-slate-700 hover:bg-slate-100',
-  icon: 'text-slate-500 border border-slate-200 hover:bg-slate-50 hover:border-slate-300 hover:text-slate-700',
+  ghost: 'text-slate-500 hover:text-slate-700 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-slate-200 dark:hover:bg-slate-800',
+  icon: 'text-slate-500 border border-slate-200 hover:bg-slate-50 hover:border-slate-300 hover:text-slate-700 dark:text-slate-400 dark:border-slate-600 dark:hover:bg-slate-800 dark:hover:border-slate-500 dark:hover:text-slate-200',
 }
 
 const sizeClasses: Record<Size, string> = {
