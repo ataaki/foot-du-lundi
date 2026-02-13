@@ -226,11 +226,7 @@ function startScheduler() {
     }
   });
 
-  // Also run immediately on startup to check if any bookings are pending
-  console.log('[Scheduler] Running initial check...');
-  runScheduledBookings().catch(err => {
-    console.error(`[Scheduler] Error in initial run: ${err.message}`);
-  });
+  console.log('[Scheduler] Ready. Next run at 00:00:05.');
 }
 
 module.exports = {
