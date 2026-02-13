@@ -53,6 +53,12 @@ Le dashboard est accessible sur [http://localhost:3000](http://localhost:3000).
 ## Docker
 
 ```bash
+docker compose up -d
+```
+
+Ou sans Docker Compose :
+
+```bash
 docker build -t foot-du-lundi .
 docker run -d --name foot-du-lundi \
   -p 3000:3000 \
@@ -60,7 +66,7 @@ docker run -d --name foot-du-lundi \
   foot-du-lundi
 ```
 
-Le volume `-v foot-du-lundi-data:/app/data` persiste la base de données SQLite (dont les identifiants) entre les redémarrages. Aucun `--env-file` n'est nécessaire : les identifiants se configurent via l'interface web.
+Le volume persiste la base de données SQLite (dont les identifiants) entre les redémarrages. Aucun `--env-file` n'est nécessaire : les identifiants se configurent via l'interface web.
 
 ## Architecture
 
