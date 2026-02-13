@@ -7,6 +7,7 @@
 
 const db = require('../db/database');
 const { BOOKING_STATUS } = require('../constants');
+const { notify } = require('./telegram');
 
 /**
  * Create a booking result log entry
@@ -79,19 +80,17 @@ function logBookingResult({
  *   price: 1200
  * });
  */
-function logSuccess({ ruleId, targetDate, targetTime, bookedTime, playground, bookingId, price }) {
+function logSuccess({ ruleId, targetDate, targetTime, bookedTime, playground, bookingId, price, duration }) {
   const priceStr = price ? ` (${price / 100}€/pers)` : '';
   console.log(`[Booking] Success: ${playground} at ${bookedTime} on ${targetDate}${priceStr}`);
 
-  return logBookingResult({
-    ruleId,
-    targetDate,
-    targetTime,
-    bookedTime,
-    playground,
-    status: BOOKING_STATUS.SUCCESS,
-    bookingId,
+  const result = logBookingResult({
+    ruleId, targetDate, targetTime, bookedTime, playground,
+    status: BOOKING_STATUS.SUCCESS, bookingId,
   });
+
+  notify({ targetDate, targetTime, bookedTime, playground, status: BOOKING_STATUS.SUCCESS, duration });
+  return result;
 }
 
 /**
@@ -115,20 +114,17 @@ function logSuccess({ ruleId, targetDate, targetTime, bookedTime, playground, bo
  *   error: new Error('API connection failed')
  * });
  */
-function logFailure({ ruleId, targetDate, targetTime, bookedTime, playground, bookingId, error }) {
+function logFailure({ ruleId, targetDate, targetTime, bookedTime, playground, bookingId, error, duration }) {
   const errorMessage = error?.message || String(error);
   console.error(`[Booking] Failed: ${errorMessage}`);
 
-  return logBookingResult({
-    ruleId,
-    targetDate,
-    targetTime,
-    bookedTime,
-    playground,
-    status: BOOKING_STATUS.FAILED,
-    bookingId,
-    errorMessage,
+  const result = logBookingResult({
+    ruleId, targetDate, targetTime, bookedTime, playground,
+    status: BOOKING_STATUS.FAILED, bookingId, errorMessage,
   });
+
+  notify({ targetDate, targetTime, bookedTime, playground, status: BOOKING_STATUS.FAILED, errorMessage, duration });
+  return result;
 }
 
 /**
@@ -158,20 +154,17 @@ function logFailure({ ruleId, targetDate, targetTime, bookedTime, playground, bo
  *   error: new Error('Stripe payment failed')
  * });
  */
-function logPaymentFailure({ ruleId, targetDate, targetTime, bookedTime, playground, bookingId, error }) {
+function logPaymentFailure({ ruleId, targetDate, targetTime, bookedTime, playground, bookingId, error, duration }) {
   const errorMessage = error?.message || String(error);
   console.error(`[Payment] Failed: ${errorMessage}`);
 
-  return logBookingResult({
-    ruleId,
-    targetDate,
-    targetTime,
-    bookedTime,
-    playground,
-    status: BOOKING_STATUS.PAYMENT_FAILED,
-    bookingId,
-    errorMessage,
+  const result = logBookingResult({
+    ruleId, targetDate, targetTime, bookedTime, playground,
+    status: BOOKING_STATUS.PAYMENT_FAILED, bookingId, errorMessage,
   });
+
+  notify({ targetDate, targetTime, bookedTime, playground, status: BOOKING_STATUS.PAYMENT_FAILED, errorMessage, duration });
+  return result;
 }
 
 /**
@@ -186,13 +179,13 @@ function logPaymentFailure({ ruleId, targetDate, targetTime, bookedTime, playgro
 function logNoSlots({ ruleId, targetDate, targetTime }) {
   console.log(`[Booking] No slots available for ${targetDate} at ${targetTime}`);
 
-  return logBookingResult({
-    ruleId,
-    targetDate,
-    targetTime,
-    status: BOOKING_STATUS.NO_SLOTS,
-    errorMessage: 'Aucun créneau disponible',
+  const result = logBookingResult({
+    ruleId, targetDate, targetTime,
+    status: BOOKING_STATUS.NO_SLOTS, errorMessage: 'Aucun créneau disponible',
   });
+
+  notify({ targetDate, targetTime, status: BOOKING_STATUS.NO_SLOTS });
+  return result;
 }
 
 /**
@@ -208,13 +201,13 @@ function logNoSlots({ ruleId, targetDate, targetTime }) {
 function logSkipped({ ruleId, targetDate, targetTime, reason }) {
   console.log(`[Booking] Skipped: ${reason}`);
 
-  return logBookingResult({
-    ruleId,
-    targetDate,
-    targetTime,
-    status: BOOKING_STATUS.SKIPPED,
-    errorMessage: reason,
+  const result = logBookingResult({
+    ruleId, targetDate, targetTime,
+    status: BOOKING_STATUS.SKIPPED, errorMessage: reason,
   });
+
+  notify({ targetDate, targetTime, status: BOOKING_STATUS.SKIPPED, errorMessage: reason });
+  return result;
 }
 
 /**
@@ -230,14 +223,13 @@ function logSkipped({ ruleId, targetDate, targetTime, reason }) {
 function logCancellation({ targetDate, targetTime, playground, bookingId }) {
   console.log(`[Booking] Cancelled: ${bookingId} on ${targetDate}`);
 
-  return logBookingResult({
-    ruleId: null,
-    targetDate,
-    targetTime: targetTime || '-',
-    playground,
-    status: BOOKING_STATUS.CANCELLED,
-    bookingId,
+  const result = logBookingResult({
+    ruleId: null, targetDate, targetTime: targetTime || '-',
+    playground, status: BOOKING_STATUS.CANCELLED, bookingId,
   });
+
+  notify({ targetDate, targetTime, playground, status: BOOKING_STATUS.CANCELLED });
+  return result;
 }
 
 module.exports = {
