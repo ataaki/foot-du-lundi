@@ -1,7 +1,10 @@
+const DAY_NAMES = ['dim.', 'lun.', 'mar.', 'mer.', 'jeu.', 'ven.', 'sam.']
+
 export function formatDate(dateStr: string | null | undefined): string {
   if (!dateStr) return '-'
   const [y, m, d] = dateStr.split('-')
-  return `${d}/${m}/${y}`
+  const date = new Date(Number(y), Number(m) - 1, Number(d))
+  return `${DAY_NAMES[date.getDay()]} ${d}/${m}/${y}`
 }
 
 export function formatDateTime(dtStr: string | null | undefined): string {
@@ -21,6 +24,12 @@ export function formatTime(isoStr: string | null | undefined): string {
     hour: '2-digit',
     minute: '2-digit',
   })
+}
+
+export function formatDuration(minutes: number): string {
+  const h = Math.floor(minutes / 60)
+  const m = minutes % 60
+  return `${h}:${String(m).padStart(2, '0')}`
 }
 
 export function formatPrice(cents: number | null | undefined): string {

@@ -12,11 +12,11 @@ export default function Pagination({ page, totalPages, onPageChange }: Paginatio
   const pages = generatePageNumbers(page, totalPages)
 
   return (
-    <div className="flex items-center justify-center gap-3 mt-4 p-4 bg-slate-50 rounded-lg flex-wrap max-sm:gap-2">
+    <div className="flex items-center justify-center gap-2 mt-4 p-4 bg-slate-50 rounded-lg flex-wrap sm:gap-3">
       <Button variant="secondary" size="sm" disabled={page === 1} onClick={() => onPageChange(1)}>⏮</Button>
       <Button variant="secondary" size="sm" disabled={page === 1} onClick={() => onPageChange(page - 1)}>← Préc</Button>
 
-      <div className="flex items-center gap-1 mx-3 max-sm:order-3 max-sm:w-full max-sm:justify-center max-sm:my-2">
+      <div className="flex items-center gap-1 mx-3 order-3 w-full justify-center my-2 sm:order-none sm:w-auto sm:my-0">
         {pages.map((p, i) =>
           p === '...' ? (
             <span key={`e${i}`} className="px-2 text-slate-400 text-sm">...</span>

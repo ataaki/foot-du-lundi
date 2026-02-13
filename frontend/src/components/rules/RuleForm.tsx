@@ -61,24 +61,28 @@ export default function RuleForm({ open, onClose, onSave, rule, config }: RuleFo
           <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm" />
         </TransitionChild>
 
-        <div className="fixed inset-0 flex items-center justify-center p-5 max-sm:items-end max-sm:p-4">
+        <div className="fixed inset-0 flex items-end justify-center p-4 sm:items-center sm:p-5">
           <TransitionChild
             as={Fragment}
-            enter="ease-out duration-250" enterFrom="opacity-0 scale-95" enterTo="opacity-100 scale-100"
-            leave="ease-in duration-150" leaveFrom="opacity-100 scale-100" leaveTo="opacity-0 scale-95"
+            enter="ease-out duration-250"
+            enterFrom="opacity-0 translate-y-full sm:translate-y-0 sm:scale-95"
+            enterTo="opacity-100 translate-y-0 sm:scale-100"
+            leave="ease-in duration-150"
+            leaveFrom="opacity-100 translate-y-0 sm:scale-100"
+            leaveTo="opacity-0 translate-y-full sm:translate-y-0 sm:scale-95"
           >
-            <DialogPanel className="w-full max-w-lg bg-white rounded-2xl max-sm:rounded-b-none p-7 shadow-xl">
+            <DialogPanel className="w-full max-w-lg bg-white rounded-2xl rounded-b-none sm:rounded-b-2xl p-7 shadow-xl">
               <DialogTitle className="text-lg font-bold mb-5">
                 {rule ? 'Modifier la règle' : 'Ajouter une règle'}
               </DialogTitle>
 
-              <div className="grid grid-cols-3 gap-3 max-sm:grid-cols-2">
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
                 <div>
                   <label className="block text-xs font-semibold text-slate-500 mb-1.5">Jour</label>
                   <select
                     value={dayOfWeek}
                     onChange={(e) => setDayOfWeek(Number(e.target.value))}
-                    className="w-full px-3 py-2.5 border border-slate-200 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500"
+                    className="w-full px-3 py-2.5 border border-slate-200 rounded-lg text-base min-h-12 sm:text-sm sm:min-h-0 bg-white focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500"
                   >
                     {DAY_OPTIONS.map((d) => (
                       <option key={d.value} value={d.value}>{d.label}</option>
@@ -91,7 +95,7 @@ export default function RuleForm({ open, onClose, onSave, rule, config }: RuleFo
                     type="time"
                     value={targetTime}
                     onChange={(e) => setTargetTime(e.target.value)}
-                    className="w-full px-3 py-2.5 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500"
+                    className="w-full px-3 py-2.5 border border-slate-200 rounded-lg text-base min-h-12 sm:text-sm sm:min-h-0 focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500"
                   />
                 </div>
                 <div>
@@ -99,7 +103,7 @@ export default function RuleForm({ open, onClose, onSave, rule, config }: RuleFo
                   <select
                     value={duration}
                     onChange={(e) => setDuration(Number(e.target.value))}
-                    className="w-full px-3 py-2.5 border border-slate-200 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500"
+                    className="w-full px-3 py-2.5 border border-slate-200 rounded-lg text-base min-h-12 sm:text-sm sm:min-h-0 bg-white focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500"
                   >
                     {DURATION_OPTIONS.map((d) => (
                       <option key={d.value} value={d.value}>{d.label}</option>
@@ -119,7 +123,7 @@ export default function RuleForm({ open, onClose, onSave, rule, config }: RuleFo
                 />
               </div>
 
-              <div className="flex justify-end gap-2.5 mt-6 max-sm:flex-col-reverse">
+              <div className="flex flex-col-reverse gap-2.5 mt-6 sm:flex-row sm:justify-end">
                 <Button variant="secondary" onClick={onClose}>Annuler</Button>
                 <Button variant="primary" onClick={handleSave} loading={saving}>Enregistrer</Button>
               </div>

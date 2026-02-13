@@ -7,6 +7,7 @@ export function useBookings() {
   const [loading, setLoading] = useState(false)
   const [status, setStatus] = useState<'upcoming' | 'past'>('upcoming')
   const [page, setPage] = useState(1)
+  const [upcomingTotal, setUpcomingTotal] = useState(0)
 
   const load = useCallback(async (s?: 'upcoming' | 'past', p?: number) => {
     const newStatus = s ?? status
@@ -17,6 +18,9 @@ export function useBookings() {
     try {
       const result = await api.get<BookingsResponse>(`/bookings?status=${newStatus}&page=${newPage}&limit=20`)
       setData(result)
+      if (newStatus === 'upcoming') {
+        setUpcomingTotal(result.total)
+      }
     } catch {
       setData(null)
     } finally {
@@ -24,5 +28,5 @@ export function useBookings() {
     }
   }, [status, page])
 
-  return { data, loading, status, page, load }
+  return { data, loading, status, page, upcomingTotal, load }
 }

@@ -1,11 +1,11 @@
 import { useToast } from '../../hooks/use-toast'
 import type { ToastType } from '../../types'
 
-const icons: Record<ToastType, string> = {
-  success: '\u2705',
-  error: '\u274C',
-  warning: '\u26A0\uFE0F',
-  info: '\u2139\uFE0F',
+const dotColors: Record<ToastType, string> = {
+  success: 'bg-emerald-500',
+  error: 'bg-red-500',
+  warning: 'bg-amber-500',
+  info: 'bg-sky-500',
 }
 
 const borderColors: Record<ToastType, string> = {
@@ -21,13 +21,13 @@ export default function ToastContainer() {
   if (toasts.length === 0) return null
 
   return (
-    <div className="fixed top-5 right-5 z-[9999] flex flex-col gap-2.5 max-w-md pointer-events-none max-sm:top-auto max-sm:bottom-4 max-sm:left-3 max-sm:right-3 max-sm:max-w-none">
+    <div className="fixed bottom-4 left-3 right-3 z-[9999] flex flex-col gap-2.5 max-w-none pointer-events-none sm:top-5 sm:right-5 sm:left-auto sm:bottom-auto sm:max-w-md">
       {toasts.map((t) => (
         <div
           key={t.id}
           className={`pointer-events-auto flex items-start gap-3 p-3.5 rounded-xl bg-white border border-slate-200 shadow-lg border-l-4 ${borderColors[t.type]} animate-[slideIn_0.3s_ease-out]`}
         >
-          <span className="text-lg shrink-0">{icons[t.type]}</span>
+          <span className={`w-2.5 h-2.5 rounded-full shrink-0 mt-1 ${dotColors[t.type]}`} />
           <div className="flex-1 min-w-0">
             <div className="font-semibold text-sm">{t.title}</div>
             {t.message && (

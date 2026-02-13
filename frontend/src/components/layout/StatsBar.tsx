@@ -7,12 +7,21 @@ interface StatsBarProps {
 
 export default function StatsBar({ activeRules, upcomingBookings, advanceDays, onEditAdvanceDays }: StatsBarProps) {
   return (
-    <div className="grid grid-cols-3 gap-3.5 my-6 max-sm:gap-2 max-sm:my-4">
-      <StatCard value={String(activeRules)} label="Règles actives" />
-      <StatCard value={String(upcomingBookings)} label="Réservations à venir" />
+    <div className="grid grid-cols-3 gap-2 my-4 sm:gap-3.5 sm:my-6">
+      <StatCard
+        value={String(activeRules)}
+        label="Regles actives"
+        accent="border-t-emerald-500"
+      />
+      <StatCard
+        value={String(upcomingBookings)}
+        label="A venir"
+        accent="border-t-sky-500"
+      />
       <StatCard
         value={`J-${advanceDays}`}
-        label="Ouverture créneaux"
+        label="Ouverture"
+        accent="border-t-amber-500"
         onClick={onEditAdvanceDays}
         editable
       />
@@ -23,28 +32,30 @@ export default function StatsBar({ activeRules, upcomingBookings, advanceDays, o
 function StatCard({
   value,
   label,
+  accent,
   onClick,
   editable,
 }: {
   value: string
   label: string
+  accent: string
   onClick?: () => void
   editable?: boolean
 }) {
   return (
     <div
       onClick={onClick}
-      className={`bg-white rounded-xl p-4 text-center border border-slate-200 shadow-sm transition-shadow hover:shadow-md
-        max-sm:p-3 max-sm:rounded-lg
-        ${editable ? 'cursor-pointer group relative hover:border-sky-500 hover:shadow-[0_0_0_1px_rgba(56,189,248,0.15)]' : ''}`}
+      className={`bg-white rounded-lg p-3 border border-slate-200 border-t-2 ${accent} shadow-sm transition-shadow hover:shadow-md
+        sm:rounded-xl sm:p-4
+        ${editable ? 'cursor-pointer group relative hover:border-sky-300' : ''}`}
     >
       {editable && (
-        <span className="absolute top-1.5 right-2 text-[10px] text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity max-sm:opacity-50">
-          ✎
+        <span className="absolute top-1.5 right-2 text-[10px] text-slate-400 opacity-50 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
+          modifier
         </span>
       )}
-      <span className="block text-[28px] font-bold text-slate-900 leading-none max-sm:text-[22px]">{value}</span>
-      <span className="block text-[11px] font-semibold text-slate-400 mt-1.5 uppercase tracking-wider max-sm:text-[9px]">{label}</span>
+      <span className="block text-xl font-bold text-slate-900 leading-none sm:text-[28px]">{value}</span>
+      <span className="block text-[10px] font-medium text-slate-400 mt-1.5 uppercase tracking-wider sm:text-[11px]">{label}</span>
     </div>
   )
 }

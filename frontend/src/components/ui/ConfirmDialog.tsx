@@ -38,20 +38,20 @@ export default function ConfirmDialog({
           <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm" />
         </TransitionChild>
 
-        <div className="fixed inset-0 flex items-center justify-center p-5 max-sm:items-end max-sm:p-4">
+        <div className="fixed inset-0 flex items-end justify-center p-4 sm:items-center sm:p-5">
           <TransitionChild
             as={Fragment}
             enter="ease-out duration-250"
-            enterFrom="opacity-0 scale-95 max-sm:translate-y-full"
-            enterTo="opacity-100 scale-100 max-sm:translate-y-0"
+            enterFrom="opacity-0 translate-y-full sm:translate-y-0 sm:scale-95"
+            enterTo="opacity-100 translate-y-0 sm:scale-100"
             leave="ease-in duration-150"
-            leaveFrom="opacity-100 scale-100 max-sm:translate-y-0"
-            leaveTo="opacity-0 scale-95 max-sm:translate-y-full"
+            leaveFrom="opacity-100 translate-y-0 sm:scale-100"
+            leaveTo="opacity-0 translate-y-full sm:translate-y-0 sm:scale-95"
           >
-            <DialogPanel className="w-full max-w-md bg-white rounded-2xl max-sm:rounded-b-none p-7 shadow-xl">
+            <DialogPanel className="w-full max-w-md bg-white rounded-2xl rounded-b-none sm:rounded-b-2xl p-7 shadow-xl">
               <DialogTitle className="text-lg font-bold text-slate-900">{title}</DialogTitle>
               <p className="text-sm text-slate-500 mt-2 leading-relaxed">{message}</p>
-              <div className="flex justify-end gap-2.5 mt-6 max-sm:flex-col-reverse">
+              <div className="flex flex-col-reverse gap-2.5 mt-6 sm:flex-row sm:justify-end">
                 <Button variant="secondary" onClick={onClose}>
                   Annuler
                 </Button>

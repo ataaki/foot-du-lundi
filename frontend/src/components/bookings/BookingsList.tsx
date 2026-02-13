@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { TabGroup, TabList, Tab } from '@headlessui/react'
-import { formatDate, formatTime, formatPrice } from '../../lib/format'
+import { formatDate, formatTime, formatDuration, formatPrice } from '../../lib/format'
 import type { BookingsResponse } from '../../types'
 import Badge from '../ui/Badge'
 import Button from '../ui/Button'
@@ -55,21 +55,75 @@ export default function BookingsList({ data, loading, status, page, onLoad, onCa
           <span>Chargement...</span>
         </div>
       ) : !data?.bookings?.length ? (
-        <p className="text-center py-10 text-slate-400 text-sm">
-          {status === 'upcoming' ? 'Aucune réservation à venir.' : 'Aucune réservation passée.'}
-        </p>
+        <div className="text-center py-10">
+          <p className="text-sm font-medium text-slate-600">
+            {status === 'upcoming' ? 'Aucune reservation a venir' : 'Aucune reservation passee'}
+          </p>
+          <p className="text-xs text-slate-400 mt-1">
+            {status === 'upcoming' ? 'Vos prochaines reservations apparaitront ici.' : 'Votre historique de reservations est vide.'}
+          </p>
+        </div>
       ) : (
         <>
           <div className="px-4 py-2 text-xs text-slate-400 bg-slate-50">
             Page {page} / {data.totalPages} · {data.total} réservation{data.total > 1 ? 's' : ''}
           </div>
 
-          <div className="overflow-x-auto">
+          {/* Mobile cards */}
+          <div className="sm:hidden divide-y divide-slate-100">
+            {data.bookings.map((b) => (
+              <div key={b.id} className={`p-4 ${b.canceled ? 'opacity-60' : ''}`}>
+                <div className="flex items-center justify-between mb-2">
+                  <span className="font-semibold text-slate-900 text-sm">{formatDate(b.date)}</span>
+                  {b.canceled ? (
+                    <Badge variant="error">Annulée</Badge>
+                  ) : b.confirmed ? (
+                    <Badge variant="success">Confirmée</Badge>
+                  ) : (
+                    <Badge variant="pending">Non confirmée</Badge>
+                  )}
+                </div>
+                <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-sm">
+                  <div>
+                    <span className="text-slate-400 text-xs">Début</span>
+                    <p className="text-slate-700">{formatTime(b.startAt)}</p>
+                  </div>
+                  <div>
+                    <span className="text-slate-400 text-xs">Durée</span>
+                    <p className="text-slate-700">{formatDuration((new Date(b.endAt).getTime() - new Date(b.startAt).getTime()) / 60000)}</p>
+                  </div>
+                  <div>
+                    <span className="text-slate-400 text-xs">Terrain</span>
+                    <p className="text-slate-700">{b.playground || '-'}</p>
+                  </div>
+                  <div>
+                    <span className="text-slate-400 text-xs">Prix</span>
+                    <p className="text-slate-700">{formatPrice(b.pricePerParticipant)}/pers</p>
+                  </div>
+                </div>
+                {status === 'upcoming' && !b.canceled && (
+                  <Button
+                    variant="danger"
+                    size="sm"
+                    loading={cancellingId === b.id}
+                    onClick={() => handleCancel(b.id, b.date, formatTime(b.startAt), b.playground)}
+                    className="w-full mt-3"
+                  >
+                    Annuler
+                  </Button>
+                )}
+              </div>
+            ))}
+          </div>
+
+          {/* Desktop table */}
+          <div className="hidden sm:block overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr className="bg-slate-50 border-b border-slate-200">
                   <th className="text-left px-4 py-2.5 text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Date</th>
-                  <th className="text-left px-4 py-2.5 text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Horaire</th>
+                  <th className="text-left px-4 py-2.5 text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Début</th>
+                  <th className="text-left px-4 py-2.5 text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Durée</th>
                   <th className="text-left px-4 py-2.5 text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Terrain</th>
                   <th className="text-left px-4 py-2.5 text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Prix</th>
                   <th className="text-left px-4 py-2.5 text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Statut</th>
@@ -83,7 +137,8 @@ export default function BookingsList({ data, loading, status, page, onLoad, onCa
                     className={`border-t border-slate-100 hover:bg-slate-50 transition-colors ${b.canceled ? 'opacity-60 [&_td]:line-through' : ''}`}
                   >
                     <td className="px-4 py-2.5 font-semibold text-slate-700">{formatDate(b.date)}</td>
-                    <td className="px-4 py-2.5 text-slate-500">{formatTime(b.startAt)} - {formatTime(b.endAt)}</td>
+                    <td className="px-4 py-2.5 text-slate-500">{formatTime(b.startAt)}</td>
+                    <td className="px-4 py-2.5 text-slate-500">{formatDuration((new Date(b.endAt).getTime() - new Date(b.startAt).getTime()) / 60000)}</td>
                     <td className="px-4 py-2.5 text-slate-500">{b.playground || '-'}</td>
                     <td className="px-4 py-2.5 text-slate-500">{formatPrice(b.pricePerParticipant)}/pers</td>
                     <td className="px-4 py-2.5">

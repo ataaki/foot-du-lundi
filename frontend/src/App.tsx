@@ -311,34 +311,36 @@ export default function App() {
 
   return (
     <div className="min-h-dvh bg-slate-50">
-      <div className="max-w-5xl mx-auto px-5 pb-10 max-sm:px-3 max-sm:pb-6">
+      <div className="max-w-5xl mx-auto px-3 pb-6 sm:px-5 sm:pb-10">
         <Header onOpenSettings={handleOpenSettings} />
 
         <StatsBar
           activeRules={activeRulesCount}
-          upcomingBookings={bookings.data?.total ?? 0}
+          upcomingBookings={bookings.upcomingTotal}
           advanceDays={config.advance_days}
           onEditAdvanceDays={() => setAdvanceDaysDialogOpen(true)}
         />
 
         {/* Info note */}
-        <div className="bg-sky-50 border border-sky-200 rounded-xl px-4 py-3 mb-6 text-xs text-sky-700 leading-relaxed max-sm:mb-4">
-          <strong>Fonctionnement du bot :</strong> Le scheduler tente automatiquement de reserver
-          a 00:00, J-{config.advance_days} avant la date cible. Le paiement 3DS doit etre
-          confirme manuellement. Les preferences de terrain sont essayees dans l'ordre defini.
-        </div>
+        <p className="text-xs text-slate-400 leading-relaxed mb-4 sm:mb-6">
+          Les reservations sont tentees automatiquement a 00:00, J-{config.advance_days} avant la date cible. Les terrains sont testes dans l'ordre de preference. Apres reservation, un lien de paiement 3DS est envoye pour confirmation.
+        </p>
 
         {/* Rules section */}
-        <section className="mb-8 max-sm:mb-6">
+        <section className="mb-6 sm:mb-8">
           <div className="flex items-center justify-between mb-3.5">
-            <h2 className="text-lg font-bold text-slate-900">Regles de reservation</h2>
+            <div>
+              <h2 className="text-base font-bold text-slate-900 sm:text-lg">Regles de reservation</h2>
+              <p className="text-xs text-slate-400 mt-0.5">Configurez vos reservations automatiques</p>
+            </div>
             <Button variant="primary" size="sm" onClick={handleOpenNewRule}>
               + Nouvelle regle
             </Button>
           </div>
           {dashData.rules.length === 0 ? (
-            <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-8 text-center text-slate-400 text-sm">
-              Aucune regle configuree. Cliquez sur "Nouvelle regle" pour commencer.
+            <div className="bg-white border border-dashed border-slate-300 rounded-xl p-10 text-center">
+              <p className="text-sm font-medium text-slate-600">Aucune regle configuree</p>
+              <p className="text-xs text-slate-400 mt-1">Cliquez sur "Nouvelle regle" pour commencer.</p>
             </div>
           ) : (
             <div className="flex flex-col gap-3">
@@ -361,8 +363,11 @@ export default function App() {
         </section>
 
         {/* Manual booking section */}
-        <section className="mb-8 max-sm:mb-6">
-          <h2 className="text-lg font-bold text-slate-900 mb-3.5">Reservation manuelle</h2>
+        <section className="mb-6 sm:mb-8">
+          <div className="mb-3.5">
+            <h2 className="text-base font-bold text-slate-900 sm:text-lg">Reservation manuelle</h2>
+            <p className="text-xs text-slate-400 mt-0.5">Recherchez et reservez un creneau specifique</p>
+          </div>
           <SlotSearch loading={slotsHook.loading} onSearch={handleSlotSearch} />
           <SlotResults
             slots={slotsHook.slots}
@@ -372,8 +377,11 @@ export default function App() {
         </section>
 
         {/* Bookings section */}
-        <section className="mb-8 max-sm:mb-6">
-          <h2 className="text-lg font-bold text-slate-900 mb-3.5">Reservations</h2>
+        <section className="mb-6 sm:mb-8">
+          <div className="mb-3.5">
+            <h2 className="text-base font-bold text-slate-900 sm:text-lg">Reservations</h2>
+            <p className="text-xs text-slate-400 mt-0.5">Vos reservations a venir et passees</p>
+          </div>
           <BookingsList
             data={bookings.data}
             loading={bookings.loading}
@@ -386,8 +394,11 @@ export default function App() {
         </section>
 
         {/* Logs section */}
-        <section className="mb-8 max-sm:mb-6">
-          <h2 className="text-lg font-bold text-slate-900 mb-3.5">Historique</h2>
+        <section className="mb-6 sm:mb-8">
+          <div className="mb-3.5">
+            <h2 className="text-base font-bold text-slate-900 sm:text-lg">Historique</h2>
+            <p className="text-xs text-slate-400 mt-0.5">Journal des tentatives de reservation</p>
+          </div>
           <LogsTable logs={dashData.recent_logs} onDelete={handleDeleteLogs} />
         </section>
       </div>
@@ -444,8 +455,8 @@ export default function App() {
       {settingsOpen && (
         <div className="fixed inset-0 z-[10000]">
           <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm" onClick={() => setSettingsOpen(false)} />
-          <div className="fixed inset-0 flex items-center justify-center p-5 max-sm:items-end max-sm:p-4">
-            <div className="relative w-full max-w-md bg-white rounded-2xl max-sm:rounded-b-none p-7 shadow-xl">
+          <div className="fixed inset-0 flex items-end justify-center p-4 sm:items-center sm:p-5">
+            <div className="relative w-full max-w-md bg-white rounded-2xl rounded-b-none sm:rounded-b-2xl p-7 shadow-xl">
               <h2 className="text-lg font-bold text-slate-900 mb-5">Parametres</h2>
 
               <div className="mb-4">
@@ -455,7 +466,7 @@ export default function App() {
                   value={settingsEmail}
                   onChange={(e) => setSettingsEmail(e.target.value)}
                   placeholder="votre@email.com"
-                  className="w-full px-3 py-2.5 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500"
+                  className="w-full px-3 py-2.5 border border-slate-200 rounded-lg text-base min-h-12 sm:text-sm sm:min-h-0 focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500"
                 />
               </div>
 
@@ -466,11 +477,11 @@ export default function App() {
                   value={settingsPassword}
                   onChange={(e) => setSettingsPassword(e.target.value)}
                   placeholder="Mot de passe DoInSport"
-                  className="w-full px-3 py-2.5 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500"
+                  className="w-full px-3 py-2.5 border border-slate-200 rounded-lg text-base min-h-12 sm:text-sm sm:min-h-0 focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500"
                 />
               </div>
 
-              <div className="flex justify-end gap-2.5 mt-6 max-sm:flex-col-reverse">
+              <div className="flex flex-col-reverse gap-2.5 mt-6 sm:flex-row sm:justify-end">
                 <Button variant="secondary" onClick={() => setSettingsOpen(false)}>
                   Annuler
                 </Button>

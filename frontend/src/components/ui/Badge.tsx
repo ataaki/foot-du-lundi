@@ -10,7 +10,20 @@ const variantClasses: Record<BadgeVariant, string> = {
   cancelled: 'bg-stone-100 text-stone-600',
   auto: 'bg-sky-50 text-sky-700',
   manual: 'bg-fuchsia-50 text-purple-700',
-  error: 'bg-red-50 text-red-700 border border-red-200',
+  error: 'bg-red-50 text-red-700',
+}
+
+const dotColors: Record<BadgeVariant, string> = {
+  success: 'bg-emerald-500',
+  failed: 'bg-red-500',
+  payment_failed: 'bg-red-500',
+  no_slots: 'bg-amber-500',
+  pending: 'bg-blue-500',
+  skipped: 'bg-violet-500',
+  cancelled: 'bg-stone-400',
+  auto: 'bg-sky-500',
+  manual: 'bg-purple-500',
+  error: 'bg-red-500',
 }
 
 interface BadgeProps {
@@ -24,8 +37,9 @@ export default function Badge({ variant, children, title, className = '' }: Badg
   return (
     <span
       title={title}
-      className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold tracking-wide ${variantClasses[variant]} ${title ? 'cursor-help border-b border-dashed border-current' : ''} ${className}`}
+      className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold tracking-wide ${variantClasses[variant]} ${title ? 'cursor-help' : ''} ${className}`}
     >
+      <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${dotColors[variant]}`} />
       {children}
     </span>
   )

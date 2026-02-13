@@ -1,5 +1,5 @@
 import { DAY_NAMES_SHORT } from '../../lib/constants'
-import { formatDate } from '../../lib/format'
+import { formatDate, formatDuration } from '../../lib/format'
 import type { Rule } from '../../types'
 import Button from '../ui/Button'
 import Toggle from '../ui/Toggle'
@@ -14,42 +14,58 @@ interface RuleCardProps {
 }
 
 export default function RuleCard({ rule, onEdit, onDelete, onToggle, onBookNow, bookingLoading }: RuleCardProps) {
-  const pgLabel = rule.playground_order?.length ? rule.playground_order.join(', ') : 'Aucune préférence'
+  const pgLabel = rule.playground_order?.length ? rule.playground_order.join(', ') : 'Aucune preference'
 
   const j45 = rule.j45
   let j45Label = ''
   if (j45.days_until_attempt === 0) {
-    j45Label = `Réservation auto aujourd'hui à 00:00 pour le ${formatDate(j45.target_date)}`
+    j45Label = `Reservation auto aujourd'hui a 00:00 pour le ${formatDate(j45.target_date)}`
   } else if (j45.days_until_attempt === 1) {
-    j45Label = `Réservation auto demain à 00:00 pour le ${formatDate(j45.target_date)}`
+    j45Label = `Reservation auto demain a 00:00 pour le ${formatDate(j45.target_date)}`
   } else {
-    j45Label = `Réservation auto le ${formatDate(j45.attempt_date)} à 00:00 pour le ${formatDate(j45.target_date)} (dans ${j45.days_until_attempt}j)`
+    j45Label = `Reservation auto le ${formatDate(j45.attempt_date)} a 00:00 pour le ${formatDate(j45.target_date)} (dans ${j45.days_until_attempt}j)`
   }
 
   return (
     <div
-      className={`bg-white border border-slate-200 rounded-xl p-4 flex items-center gap-4 transition-all shadow-sm hover:border-sky-500 hover:shadow-[0_0_0_1px_rgba(56,189,248,0.15)]
-        max-sm:flex-col max-sm:items-stretch max-sm:gap-2.5
+      className={`bg-white border border-slate-200 rounded-xl overflow-hidden transition-all shadow-sm hover:shadow-md
         ${rule.enabled ? '' : 'opacity-45'}`}
     >
-      <div className="bg-slate-900 text-white rounded-lg px-3.5 py-2.5 text-center min-w-14 font-bold text-sm tracking-wide max-sm:self-start max-sm:px-3 max-sm:py-1.5 max-sm:text-xs">
-        {DAY_NAMES_SHORT[rule.day_of_week]}
+      <div className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:gap-4">
+        {/* Day + time */}
+        <div className="flex items-center gap-3 sm:flex-col sm:gap-0.5">
+          <div className="bg-slate-900 text-white rounded-lg px-3.5 py-2 text-center min-w-16 font-bold text-sm tracking-wide">
+            {DAY_NAMES_SHORT[rule.day_of_week]}
+          </div>
+          <span className="text-lg font-bold text-slate-900 tracking-tight sm:text-2xl sm:mt-0.5">{rule.target_time}</span>
+        </div>
+
+        {/* Info */}
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 text-sm text-slate-500">
+            <span>Football 5v5</span>
+            <span className="text-slate-300">/</span>
+            <span>{formatDuration(rule.duration)}</span>
+          </div>
+          <div className="text-xs text-slate-400 mt-1">Terrains : {pgLabel}</div>
+        </div>
+
+        {/* Actions */}
+        <div className="flex items-center w-full justify-between gap-2 border-t border-slate-100 pt-3 sm:w-auto sm:border-t-0 sm:pt-0 sm:justify-start sm:gap-2 sm:shrink-0">
+          <Toggle enabled={rule.enabled} onChange={(v) => onToggle(rule.id, v)} label={rule.enabled ? 'Desactiver' : 'Activer'} />
+          <div className="flex items-center gap-1.5">
+            <Button variant="ghost" size="sm" onClick={() => onEdit(rule.id)}>Modifier</Button>
+            <Button variant="ghost" size="sm" onClick={() => onDelete(rule.id)} className="!text-red-500 hover:!text-red-600 hover:!bg-red-50">Supprimer</Button>
+          </div>
+          <Button variant="primary" size="sm" onClick={() => onBookNow(rule.id, j45.target_date)} loading={bookingLoading}>
+            Declencher
+          </Button>
+        </div>
       </div>
 
-      <div className="flex-1 min-w-0">
-        <div className="text-xl font-bold text-slate-900 tracking-tight max-sm:text-lg">{rule.target_time}</div>
-        <div className="text-sm text-slate-500 mt-0.5">Football 5v5 - {rule.duration_label} - Tarif variable selon horaire</div>
-        <div className="text-xs text-slate-400 mt-0.5">Terrains : {pgLabel}</div>
-        <div className="text-xs text-sky-600 font-medium mt-1">{j45Label}</div>
-      </div>
-
-      <div className="flex items-center gap-1.5 shrink-0 max-sm:w-full max-sm:justify-between max-sm:flex-wrap max-sm:gap-2">
-        <Button variant="success" size="sm" onClick={() => onBookNow(rule.id, j45.target_date)} loading={bookingLoading}>
-          ⚡ Réserver
-        </Button>
-        <Button variant="icon" size="sm" onClick={() => onEdit(rule.id)}>✏</Button>
-        <Toggle enabled={rule.enabled} onChange={(v) => onToggle(rule.id, v)} label={rule.enabled ? 'Désactiver' : 'Activer'} />
-        <Button variant="icon" size="sm" onClick={() => onDelete(rule.id)}>🗑</Button>
+      {/* Next booking info bar */}
+      <div className="bg-slate-50 border-t border-slate-100 px-4 py-2 text-xs text-slate-500">
+        {j45Label}
       </div>
     </div>
   )

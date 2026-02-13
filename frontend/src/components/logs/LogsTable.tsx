@@ -44,8 +44,11 @@ export default function LogsTable({ logs, onDelete }: LogsTableProps) {
 
   if (!logs.length) {
     return (
-      <div className="bg-white border border-slate-200 rounded-xl shadow-sm">
-        <p className="text-center py-10 text-slate-400 text-sm">Aucun historique.</p>
+      <div className="bg-white border border-dashed border-slate-300 rounded-xl">
+        <div className="text-center py-10">
+          <p className="text-sm font-medium text-slate-600">Aucun historique</p>
+          <p className="text-xs text-slate-400 mt-1">Les tentatives de reservation apparaitront ici.</p>
+        </div>
       </div>
     )
   }
@@ -61,7 +64,54 @@ export default function LogsTable({ logs, onDelete }: LogsTableProps) {
         </div>
       )}
 
-      <div className="overflow-x-auto">
+      {/* Mobile cards */}
+      <div className="sm:hidden">
+        <div className="px-4 py-2 bg-slate-50 border-b border-slate-200 flex items-center gap-2">
+          <input
+            type="checkbox"
+            checked={allChecked}
+            onChange={(e) => toggleAll(e.target.checked)}
+            className="accent-slate-900 w-5 h-5"
+          />
+          <span className="text-xs text-slate-400">Tout sélectionner</span>
+        </div>
+        <div className="divide-y divide-slate-100">
+          {logs.map((log) => (
+            <div key={log.id} className="p-4 flex gap-3">
+              <input
+                type="checkbox"
+                checked={selectedIds.has(log.id)}
+                onChange={(e) => toggleOne(log.id, e.target.checked)}
+                className="accent-slate-900 mt-1 w-5 h-5 shrink-0"
+              />
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center justify-between mb-1">
+                  <Badge variant={log.rule_id != null ? 'auto' : 'manual'}>
+                    {log.rule_id != null ? 'Auto' : 'Manuel'}
+                  </Badge>
+                  <Badge
+                    variant={log.status as 'success' | 'failed' | 'no_slots' | 'pending' | 'skipped' | 'payment_failed' | 'cancelled'}
+                    title={log.error_message || undefined}
+                  >
+                    {STATUS_LABELS[log.status] || log.status}
+                  </Badge>
+                </div>
+                <div className="text-sm font-semibold text-slate-700">
+                  {formatDate(log.target_date)} à {log.target_time}
+                </div>
+                <div className="text-xs text-slate-500 mt-0.5">
+                  {log.booked_time ? `Réservée : ${log.booked_time}` : ''}
+                  {log.playground ? ` · ${log.playground}` : ''}
+                </div>
+                <div className="text-xs text-slate-400 mt-0.5">{formatDateTime(log.created_at)}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Desktop table */}
+      <div className="hidden sm:block overflow-x-auto">
         <table className="w-full text-sm min-w-[600px]">
           <thead>
             <tr className="bg-slate-50 border-b border-slate-200">

@@ -61,7 +61,7 @@ export default function PlaygroundPrefs({ allNames, selected, onChange }: Playgr
   return (
     <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
       <SortableContext items={items.map((i) => i.id)} strategy={verticalListSortingStrategy}>
-        <div className="flex flex-wrap gap-1.5 mt-1.5">
+        <div className="flex flex-wrap gap-2 mt-1.5 sm:gap-1.5">
           {items.map((item) => (
             <SortableItem key={item.id} item={item} onToggle={handleToggle} />
           ))}
@@ -83,9 +83,9 @@ function SortableItem({ item, onToggle }: { item: { id: string; checked: boolean
     <div
       ref={setNodeRef}
       style={style}
-      className={`flex items-center gap-1.5 bg-slate-50 border border-slate-200 rounded-md px-2.5 py-1.5 text-sm select-none transition-colors hover:border-slate-300 ${isDragging ? 'opacity-40' : ''}`}
+      className={`flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-md px-3 py-2.5 text-sm select-none transition-colors hover:border-slate-300 sm:gap-1.5 sm:px-2.5 sm:py-1.5 ${isDragging ? 'opacity-40' : ''}`}
     >
-      <span {...attributes} {...listeners} className="text-slate-400 text-[10px] cursor-grab">
+      <span {...attributes} {...listeners} className="text-slate-400 text-sm p-1 cursor-grab sm:text-[10px] sm:p-0">
         ⠿
       </span>
       <label className="flex items-center gap-1 cursor-pointer text-sm">
@@ -93,7 +93,7 @@ function SortableItem({ item, onToggle }: { item: { id: string; checked: boolean
           type="checkbox"
           checked={item.checked}
           onChange={() => onToggle(item.id)}
-          className="accent-slate-900"
+          className="accent-slate-900 w-5 h-5 sm:w-4 sm:h-4"
         />
         {item.id}
       </label>
