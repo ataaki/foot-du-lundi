@@ -30,6 +30,7 @@ export default function Header({ onOpenSettings }: HeaderProps) {
           <button
             onClick={cycleTheme}
             className="inline-flex items-center gap-1.5 px-3 py-2.5 text-xs font-semibold rounded-md border border-slate-200 dark:border-slate-600 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:border-slate-300 dark:hover:border-slate-500 hover:text-slate-700 dark:hover:text-slate-200 transition-all cursor-pointer sm:px-3 sm:py-1.5"
+            aria-label={`Changer le theme, actuellement : ${label}`}
             title={`Theme: ${label}`}
           >
             <span>{icon}</span>

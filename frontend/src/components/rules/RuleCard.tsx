@@ -56,7 +56,7 @@ export default function RuleCard({ rule, onEdit, onDelete, onToggle, onBookNow, 
             <Toggle enabled={rule.enabled} onChange={(v) => onToggle(rule.id, v)} label={rule.enabled ? 'Desactiver' : 'Activer'} />
             <div className="flex items-center gap-1.5">
               <Button variant="ghost" size="sm" onClick={() => onEdit(rule.id)}>Modifier</Button>
-              <Button variant="ghost" size="sm" onClick={() => onDelete(rule.id)} className="!text-red-500 hover:!text-red-600 hover:!bg-red-50">Supprimer</Button>
+              <Button variant="ghost" size="sm" onClick={() => onDelete(rule.id)} className="!text-red-500 hover:!text-red-600 hover:!bg-red-50 dark:hover:!bg-red-500/15">Supprimer</Button>
             </div>
           </div>
           <Button variant="primary" size="sm" onClick={() => onBookNow(rule.id, j45.target_date)} loading={bookingLoading} className="w-full sm:w-auto">

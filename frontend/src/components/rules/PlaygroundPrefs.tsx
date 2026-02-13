@@ -93,7 +93,7 @@ function SortableItem({ item, onToggle }: { item: { id: string; checked: boolean
           type="checkbox"
           checked={item.checked}
           onChange={() => onToggle(item.id)}
-          className="accent-slate-900 w-5 h-5 sm:w-4 sm:h-4"
+          className="accent-slate-900 dark:accent-slate-100 w-5 h-5 sm:w-4 sm:h-4"
         />
         {item.id}
       </label>

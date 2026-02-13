@@ -71,7 +71,7 @@ export default function LogsTable({ logs, onDelete }: LogsTableProps) {
             type="checkbox"
             checked={allChecked}
             onChange={(e) => toggleAll(e.target.checked)}
-            className="accent-slate-900 w-5 h-5"
+            className="accent-slate-900 dark:accent-slate-100 w-5 h-5"
           />
           <span className="text-xs text-slate-400">Tout sélectionner</span>
         </div>
@@ -82,7 +82,7 @@ export default function LogsTable({ logs, onDelete }: LogsTableProps) {
                 type="checkbox"
                 checked={selectedIds.has(log.id)}
                 onChange={(e) => toggleOne(log.id, e.target.checked)}
-                className="accent-slate-900 mt-1 w-5 h-5 shrink-0"
+                className="accent-slate-900 dark:accent-slate-100 mt-1 w-5 h-5 shrink-0"
               />
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between mb-1">
@@ -120,7 +120,7 @@ export default function LogsTable({ logs, onDelete }: LogsTableProps) {
                   type="checkbox"
                   checked={allChecked}
                   onChange={(e) => toggleAll(e.target.checked)}
-                  className="accent-slate-900 cursor-pointer"
+                  className="accent-slate-900 dark:accent-slate-100 cursor-pointer"
                 />
               </th>
               <th className="text-left px-4 py-2.5 text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Type</th>
@@ -140,7 +140,7 @@ export default function LogsTable({ logs, onDelete }: LogsTableProps) {
                     type="checkbox"
                     checked={selectedIds.has(log.id)}
                     onChange={(e) => toggleOne(log.id, e.target.checked)}
-                    className="accent-slate-900 cursor-pointer"
+                    className="accent-slate-900 dark:accent-slate-100 cursor-pointer"
                   />
                 </td>
                 <td className="px-4 py-2.5">
@@ -149,9 +149,9 @@ export default function LogsTable({ logs, onDelete }: LogsTableProps) {
                   </Badge>
                 </td>
                 <td className="px-4 py-2.5 text-slate-700 dark:text-slate-300">{formatDate(log.target_date)}</td>
-                <td className="px-4 py-2.5 text-slate-500">{log.target_time}</td>
-                <td className="px-4 py-2.5 text-slate-500">{log.booked_time || '-'}</td>
-                <td className="px-4 py-2.5 text-slate-500">{log.playground || '-'}</td>
+                <td className="px-4 py-2.5 text-slate-500 dark:text-slate-400">{log.target_time}</td>
+                <td className="px-4 py-2.5 text-slate-500 dark:text-slate-400">{log.booked_time || '-'}</td>
+                <td className="px-4 py-2.5 text-slate-500 dark:text-slate-400">{log.playground || '-'}</td>
                 <td className="px-4 py-2.5">
                   <Badge
                     variant={log.status as 'success' | 'failed' | 'no_slots' | 'pending' | 'skipped' | 'payment_failed' | 'cancelled'}
