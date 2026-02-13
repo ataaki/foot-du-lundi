@@ -51,13 +51,15 @@ export default function RuleCard({ rule, onEdit, onDelete, onToggle, onBookNow, 
         </div>
 
         {/* Actions */}
-        <div className="flex items-center w-full justify-between gap-2 border-t border-slate-100 pt-3 sm:w-auto sm:border-t-0 sm:pt-0 sm:justify-start sm:gap-2 sm:shrink-0">
-          <Toggle enabled={rule.enabled} onChange={(v) => onToggle(rule.id, v)} label={rule.enabled ? 'Desactiver' : 'Activer'} />
-          <div className="flex items-center gap-1.5">
-            <Button variant="ghost" size="sm" onClick={() => onEdit(rule.id)}>Modifier</Button>
-            <Button variant="ghost" size="sm" onClick={() => onDelete(rule.id)} className="!text-red-500 hover:!text-red-600 hover:!bg-red-50">Supprimer</Button>
+        <div className="flex flex-col gap-2.5 w-full border-t border-slate-100 pt-3 sm:flex-row sm:items-center sm:w-auto sm:border-t-0 sm:pt-0 sm:gap-2 sm:shrink-0">
+          <div className="flex items-center justify-between sm:gap-2">
+            <Toggle enabled={rule.enabled} onChange={(v) => onToggle(rule.id, v)} label={rule.enabled ? 'Desactiver' : 'Activer'} />
+            <div className="flex items-center gap-1.5">
+              <Button variant="ghost" size="sm" onClick={() => onEdit(rule.id)}>Modifier</Button>
+              <Button variant="ghost" size="sm" onClick={() => onDelete(rule.id)} className="!text-red-500 hover:!text-red-600 hover:!bg-red-50">Supprimer</Button>
+            </div>
           </div>
-          <Button variant="primary" size="sm" onClick={() => onBookNow(rule.id, j45.target_date)} loading={bookingLoading}>
+          <Button variant="primary" size="sm" onClick={() => onBookNow(rule.id, j45.target_date)} loading={bookingLoading} className="w-full sm:w-auto">
             Declencher
           </Button>
         </div>
