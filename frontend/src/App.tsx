@@ -322,9 +322,14 @@ export default function App() {
         />
 
         {/* Info note */}
-        <p className="text-xs text-slate-400 leading-relaxed mb-4 sm:mb-6">
-          Les reservations sont tentees automatiquement a 00:00, J-{config.advance_days} avant la date cible. Les terrains sont testes dans l'ordre de preference. Apres reservation, un lien de paiement 3DS est envoye pour confirmation.
-        </p>
+        <div className="bg-sky-50 border border-sky-200 rounded-lg p-3.5 mb-4 text-sky-900 text-xs leading-relaxed sm:p-4 sm:mb-6 sm:text-[13px]">
+          <p className="font-semibold mb-1.5">Fonctionnement du bot</p>
+          <ul className="list-disc pl-4 space-y-0.5">
+            <li>Le scheduler se declenche chaque jour a <strong>00:00</strong> et reserve les creneaux qui ouvrent a <strong>J-{config.advance_days}</strong></li>
+            <li>Si ta banque demande une confirmation 3DS, le bot attend jusqu'a <strong>5 minutes</strong> que tu valides sur ton appli bancaire</li>
+            <li>Le bot choisit le meilleur terrain disponible selon tes preferences</li>
+          </ul>
+        </div>
 
         {/* Rules section */}
         <section className="mb-6 sm:mb-8">
