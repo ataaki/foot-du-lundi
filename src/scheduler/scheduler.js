@@ -101,7 +101,7 @@ async function executeBooking(rule, targetDate) {
         ruleId: rule.id,
         targetDate,
         targetTime: rule.target_time,
-        reason: 'Reservation deja existante pour cette date',
+        reason: 'Réservation déjà existante pour cette date',
       });
       return { status: 'skipped' };
     }

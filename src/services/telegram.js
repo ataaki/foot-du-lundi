@@ -2,12 +2,12 @@ const db = require('../db/database');
 const { BOOKING_STATUS, DAY_NAMES } = require('../constants');
 
 const STATUS_LABELS = {
-  [BOOKING_STATUS.SUCCESS]: 'Reservation confirmee',
-  [BOOKING_STATUS.FAILED]: 'Reservation echouee',
-  [BOOKING_STATUS.NO_SLOTS]: 'Aucun creneau disponible',
-  [BOOKING_STATUS.SKIPPED]: 'Reservation ignoree',
-  [BOOKING_STATUS.PAYMENT_FAILED]: 'Paiement echoue',
-  [BOOKING_STATUS.CANCELLED]: 'Reservation annulee',
+  [BOOKING_STATUS.SUCCESS]: 'Réservation confirmée',
+  [BOOKING_STATUS.FAILED]: 'Réservation échouée',
+  [BOOKING_STATUS.NO_SLOTS]: 'Aucun créneau disponible',
+  [BOOKING_STATUS.SKIPPED]: 'Réservation ignorée',
+  [BOOKING_STATUS.PAYMENT_FAILED]: 'Paiement échoué',
+  [BOOKING_STATUS.CANCELLED]: 'Réservation annulée',
 };
 
 function getConfig() {
@@ -50,7 +50,7 @@ function buildMessage({ targetDate, targetTime, bookedTime, playground, status, 
     lines.push(`Heure cible : ${formatTime(targetTime)}`);
   }
 
-  if (duration) lines.push(`Duree : ${duration} min`);
+  if (duration) lines.push(`Durée : ${duration} min`);
   if (errorMessage) lines.push(`Erreur : ${esc(errorMessage)}`);
 
   return lines.join('\n');
@@ -81,7 +81,7 @@ function notify(logEntry) {
 
 async function sendTestMessage() {
   const config = getConfig();
-  if (!config) throw new Error('Telegram non configure (token ou chat ID manquant)');
+  if (!config) throw new Error('Telegram non configuré (token ou chat ID manquant)');
   await sendTelegram(config.token, config.chatId, '<b>Test</b>\n\nLa connexion Telegram fonctionne.');
 }
 

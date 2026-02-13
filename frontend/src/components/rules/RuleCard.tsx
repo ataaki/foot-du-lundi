@@ -14,17 +14,17 @@ interface RuleCardProps {
 }
 
 export default function RuleCard({ rule, onEdit, onDelete, onToggle, onBookNow, bookingLoading }: RuleCardProps) {
-  const pgLabel = rule.playground_order?.length ? rule.playground_order.join(', ') : 'Aucune preference'
+  const pgLabel = rule.playground_order?.length ? rule.playground_order.join(', ') : 'Aucune préférence'
 
   const j45 = rule.j45
   const triggerTime = rule.trigger_time || '00:00'
   let j45Label = ''
   if (j45.days_until_attempt === 0) {
-    j45Label = `Reservation auto aujourd'hui a ${triggerTime} pour le ${formatDate(j45.target_date)}`
+    j45Label = `Réservation auto aujourd'hui à ${triggerTime} pour le ${formatDate(j45.target_date)}`
   } else if (j45.days_until_attempt === 1) {
-    j45Label = `Reservation auto demain a ${triggerTime} pour le ${formatDate(j45.target_date)}`
+    j45Label = `Réservation auto demain à ${triggerTime} pour le ${formatDate(j45.target_date)}`
   } else {
-    j45Label = `Reservation auto le ${formatDate(j45.attempt_date)} a ${triggerTime} pour le ${formatDate(j45.target_date)} (dans ${j45.days_until_attempt}j)`
+    j45Label = `Réservation auto le ${formatDate(j45.attempt_date)} à ${triggerTime} pour le ${formatDate(j45.target_date)} (dans ${j45.days_until_attempt}j)`
   }
 
   return (
@@ -54,14 +54,14 @@ export default function RuleCard({ rule, onEdit, onDelete, onToggle, onBookNow, 
         {/* Actions */}
         <div className="flex flex-col gap-2.5 w-full border-t border-slate-100 dark:border-slate-700 pt-3 sm:flex-row sm:items-center sm:w-auto sm:border-t-0 sm:pt-0 sm:gap-2 sm:shrink-0">
           <div className="flex items-center justify-between sm:gap-2">
-            <Toggle enabled={rule.enabled} onChange={(v) => onToggle(rule.id, v)} label={rule.enabled ? 'Desactiver' : 'Activer'} />
+            <Toggle enabled={rule.enabled} onChange={(v) => onToggle(rule.id, v)} label={rule.enabled ? 'Désactiver' : 'Activer'} />
             <div className="flex items-center gap-1.5">
               <Button variant="ghost" size="sm" onClick={() => onEdit(rule.id)}>Modifier</Button>
               <Button variant="ghost" size="sm" onClick={() => onDelete(rule.id)} className="!text-red-500 hover:!text-red-600 hover:!bg-red-50 dark:hover:!bg-red-500/15">Supprimer</Button>
             </div>
           </div>
           <Button variant="primary" size="sm" onClick={() => onBookNow(rule.id, j45.target_date)} loading={bookingLoading} className="w-full sm:w-auto">
-            Declencher
+            Déclencher
           </Button>
         </div>
       </div>

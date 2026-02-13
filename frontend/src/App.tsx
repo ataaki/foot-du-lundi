@@ -100,10 +100,10 @@ export default function App() {
     try {
       if (editingRule) {
         await rules.updateRule(editingRule.id, data)
-        toast('success', 'Regle modifiee')
+        toast('success', 'Règle modifiée')
       } else {
         await rules.createRule(data)
-        toast('success', 'Regle creee')
+        toast('success', 'Règle créée')
       }
       await dashboard.refresh()
     } catch (err) {
@@ -115,7 +115,7 @@ export default function App() {
   const handleToggleRule = useCallback(async (id: number, enabled: boolean) => {
     try {
       await rules.toggleRule(id, enabled)
-      toast('success', enabled ? 'Regle activee' : 'Regle desactivee')
+      toast('success', enabled ? 'Règle activée' : 'Règle désactivée')
       await dashboard.refresh()
     } catch (err) {
       toast('error', 'Erreur', err instanceof Error ? err.message : 'Erreur inconnue')
@@ -127,7 +127,7 @@ export default function App() {
     setDeleteRuleLoading(true)
     try {
       await rules.deleteRule(deleteRuleTarget.id)
-      toast('success', 'Regle supprimee')
+      toast('success', 'Règle supprimée')
       setDeleteRuleTarget(null)
       await dashboard.refresh()
     } catch (err) {
@@ -142,14 +142,14 @@ export default function App() {
     try {
       const result = await rules.bookNow(ruleId, date)
       if (result.status === 'success') {
-        toast('success', 'Reservation reussie', `${result.booked_time || ''} - ${result.playground || ''}`)
+        toast('success', 'Réservation réussie', `${result.booked_time || ''} - ${result.playground || ''}`)
         await dashboard.refresh()
         await bookings.load('upcoming', 1)
       } else {
-        toast('warning', 'Reservation non aboutie', result.error_message || result.error || result.status)
+        toast('warning', 'Réservation non aboutie', result.error_message || result.error || result.status)
       }
     } catch (err) {
-      toast('error', 'Erreur de reservation', err instanceof Error ? err.message : 'Erreur inconnue')
+      toast('error', 'Erreur de réservation', err instanceof Error ? err.message : 'Erreur inconnue')
     } finally {
       setBookNowRuleId(null)
     }
@@ -173,12 +173,12 @@ export default function App() {
         `/bookings/${cancelBookingTarget.id}?${params}`
       )
       if (result.success) {
-        toast('success', 'Reservation annulee')
+        toast('success', 'Réservation annulée')
         setCancelBookingTarget(null)
         await bookings.load('upcoming', 1)
         await dashboard.refresh()
       } else {
-        toast('error', 'Erreur', result.error || 'Annulation echouee')
+        toast('error', 'Erreur', result.error || 'Annulation échouée')
       }
     } catch (err) {
       toast('error', 'Erreur', err instanceof Error ? err.message : 'Erreur inconnue')
@@ -202,14 +202,14 @@ export default function App() {
         playgroundName: slot.playground.name,
       })
       if (result.status === 'success') {
-        toast('success', 'Reservation reussie', `${slot.startAt} - ${slot.playground.name}`)
+        toast('success', 'Réservation réussie', `${slot.startAt} - ${slot.playground.name}`)
         await bookings.load('upcoming', 1)
         await dashboard.refresh()
       } else {
-        toast('warning', 'Reservation non aboutie', result.error_message || result.error || result.status)
+        toast('warning', 'Réservation non aboutie', result.error_message || result.error || result.status)
       }
     } catch (err) {
-      toast('error', 'Erreur de reservation', err instanceof Error ? err.message : 'Erreur inconnue')
+      toast('error', 'Erreur de réservation', err instanceof Error ? err.message : 'Erreur inconnue')
     }
   }, [slotsHook, slotSearchDate, bookings, dashboard, toast])
 
@@ -217,7 +217,7 @@ export default function App() {
   const handleDeleteLogs = useCallback(async (ids: number[]) => {
     try {
       await api.delete('/logs', { ids })
-      toast('success', `${ids.length} log${ids.length > 1 ? 's' : ''} supprime${ids.length > 1 ? 's' : ''}`)
+      toast('success', `${ids.length} log${ids.length > 1 ? 's' : ''} supprimé${ids.length > 1 ? 's' : ''}`)
       await dashboard.refresh()
     } catch (err) {
       toast('error', 'Erreur', err instanceof Error ? err.message : 'Erreur inconnue')
@@ -258,7 +258,7 @@ export default function App() {
       if (settingsTelegramToken) telegramPayload.telegram_bot_token = settingsTelegramToken
       await api.put('/settings', telegramPayload)
 
-      toast('success', 'Parametres enregistres')
+      toast('success', 'Paramètres enregistrés')
       setSettingsOpen(false)
       await dashboard.refresh()
     } catch (err) {
@@ -272,7 +272,7 @@ export default function App() {
     setTelegramTesting(true)
     try {
       await api.post('/telegram/test', {})
-      toast('success', 'Message test envoye')
+      toast('success', 'Message test envoyé')
     } catch (err) {
       toast('error', 'Erreur Telegram', err instanceof Error ? err.message : 'Erreur inconnue')
     } finally {
@@ -328,7 +328,7 @@ export default function App() {
           <p className="text-red-500 font-semibold">Erreur</p>
           <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">{dashboard.error}</p>
           <Button variant="primary" onClick={dashboard.refresh} className="mt-4">
-            Reessayer
+            Réessayer
           </Button>
         </div>
         <ToastContainer />
@@ -358,9 +358,9 @@ export default function App() {
         <div className="bg-sky-50 dark:bg-sky-500/10 border border-sky-200 dark:border-sky-500/20 rounded-lg p-3.5 mb-4 text-sky-900 dark:text-sky-300 text-xs leading-relaxed sm:p-4 sm:mb-6 sm:text-[13px]">
           <p className="font-semibold mb-1.5">Fonctionnement du bot</p>
           <ul className="list-disc pl-4 space-y-0.5">
-            <li>Chaque regle se declenche a son heure configuree et reserve les creneaux qui ouvrent a <strong>J-{config.advance_days}</strong></li>
-            <li>Si ta banque demande une confirmation 3DS, le bot attend jusqu'a <strong>5 minutes</strong> que tu valides sur ton appli bancaire</li>
-            <li>Le bot choisit le meilleur terrain disponible selon tes preferences</li>
+            <li>Chaque règle se déclenche à son heure configurée et réserve les créneaux qui ouvrent à <strong>J-{config.advance_days}</strong></li>
+            <li>Si ta banque demande une confirmation 3DS, le bot attend jusqu'à <strong>5 minutes</strong> que tu valides sur ton appli bancaire</li>
+            <li>Le bot choisit le meilleur terrain disponible selon tes préférences</li>
           </ul>
         </div>
 
@@ -368,17 +368,17 @@ export default function App() {
         <section className="mb-6 sm:mb-8">
           <div className="flex items-center justify-between mb-3.5">
             <div>
-              <h2 className="text-base font-bold text-slate-900 dark:text-slate-100 sm:text-lg">Regles de reservation</h2>
-              <p className="text-xs text-slate-400 mt-0.5">Configurez vos reservations automatiques</p>
+              <h2 className="text-base font-bold text-slate-900 dark:text-slate-100 sm:text-lg">Règles de réservation</h2>
+              <p className="text-xs text-slate-400 mt-0.5">Configurez vos réservations automatiques</p>
             </div>
             <Button variant="primary" size="sm" onClick={handleOpenNewRule}>
-              + Nouvelle regle
+              + Nouvelle règle
             </Button>
           </div>
           {dashData.rules.length === 0 ? (
             <div className="bg-white dark:bg-slate-800 border border-dashed border-slate-300 dark:border-slate-600 rounded-xl p-10 text-center">
-              <p className="text-sm font-medium text-slate-600 dark:text-slate-300">Aucune regle configuree</p>
-              <p className="text-xs text-slate-400 mt-1">Cliquez sur "Nouvelle regle" pour commencer.</p>
+              <p className="text-sm font-medium text-slate-600 dark:text-slate-300">Aucune règle configurée</p>
+              <p className="text-xs text-slate-400 mt-1">Cliquez sur "Nouvelle règle" pour commencer.</p>
             </div>
           ) : (
             <div className="flex flex-col gap-3">
@@ -403,8 +403,8 @@ export default function App() {
         {/* Manual booking section */}
         <section className="mb-6 sm:mb-8">
           <div className="mb-3.5">
-            <h2 className="text-base font-bold text-slate-900 dark:text-slate-100 sm:text-lg">Reservation manuelle</h2>
-            <p className="text-xs text-slate-400 mt-0.5">Recherchez et reservez un creneau specifique</p>
+            <h2 className="text-base font-bold text-slate-900 dark:text-slate-100 sm:text-lg">Réservation manuelle</h2>
+            <p className="text-xs text-slate-400 mt-0.5">Recherchez et réservez un créneau spécifique</p>
           </div>
           <SlotSearch loading={slotsHook.loading} onSearch={handleSlotSearch} />
           <SlotResults
@@ -417,8 +417,8 @@ export default function App() {
         {/* Bookings section */}
         <section className="mb-6 sm:mb-8">
           <div className="mb-3.5">
-            <h2 className="text-base font-bold text-slate-900 dark:text-slate-100 sm:text-lg">Reservations</h2>
-            <p className="text-xs text-slate-400 mt-0.5">Vos reservations a venir et passees</p>
+            <h2 className="text-base font-bold text-slate-900 dark:text-slate-100 sm:text-lg">Réservations</h2>
+            <p className="text-xs text-slate-400 mt-0.5">Vos réservations à venir et passées</p>
           </div>
           <BookingsList
             data={bookings.data}
@@ -435,7 +435,7 @@ export default function App() {
         <section className="mb-6 sm:mb-8">
           <div className="mb-3.5">
             <h2 className="text-base font-bold text-slate-900 dark:text-slate-100 sm:text-lg">Historique</h2>
-            <p className="text-xs text-slate-400 mt-0.5">Journal des tentatives de reservation</p>
+            <p className="text-xs text-slate-400 mt-0.5">Journal des tentatives de réservation</p>
           </div>
           <LogsTable logs={dashData.recent_logs} onDelete={handleDeleteLogs} />
         </section>
@@ -455,9 +455,9 @@ export default function App() {
         open={deleteRuleTarget !== null}
         onClose={() => setDeleteRuleTarget(null)}
         onConfirm={handleDeleteRuleConfirm}
-        title="Supprimer la regle"
+        title="Supprimer la règle"
         message={deleteRuleTarget
-          ? `Voulez-vous vraiment supprimer la regle du ${deleteRuleTarget.day_name} a ${deleteRuleTarget.target_time} ?`
+          ? `Voulez-vous vraiment supprimer la règle du ${deleteRuleTarget.day_name} à ${deleteRuleTarget.target_time} ?`
           : ''}
         confirmLabel="Supprimer"
         confirmVariant="danger"
@@ -469,11 +469,11 @@ export default function App() {
         open={cancelBookingTarget !== null}
         onClose={() => setCancelBookingTarget(null)}
         onConfirm={handleCancelBookingConfirm}
-        title="Annuler la reservation"
+        title="Annuler la réservation"
         message={cancelBookingTarget
-          ? `Voulez-vous vraiment annuler la reservation du ${cancelBookingTarget.date} a ${cancelBookingTarget.time} (${cancelBookingTarget.playground}) ?`
+          ? `Voulez-vous vraiment annuler la réservation du ${cancelBookingTarget.date} à ${cancelBookingTarget.time} (${cancelBookingTarget.playground}) ?`
           : ''}
-        confirmLabel="Annuler la reservation"
+        confirmLabel="Annuler la réservation"
         confirmVariant="danger"
         loading={cancelBookingLoading}
       />
@@ -483,8 +483,8 @@ export default function App() {
         open={advanceDaysDialogOpen}
         onClose={() => setAdvanceDaysDialogOpen(false)}
         onConfirm={handleAdvanceDaysConfirm}
-        title="Ouverture des creneaux"
-        message={`Les creneaux sont ouverts a la reservation J-${config.advance_days} avant la date cible. Cette valeur est configuree cote serveur.`}
+        title="Ouverture des créneaux"
+        message={`Les créneaux sont ouverts à la réservation J-${config.advance_days} avant la date cible. Cette valeur est configurée côté serveur.`}
         confirmLabel="Compris"
         confirmVariant="primary"
       />
@@ -495,7 +495,7 @@ export default function App() {
           <div className="fixed inset-0 bg-slate-900/40 dark:bg-black/60 backdrop-blur-sm" onClick={() => setSettingsOpen(false)} />
           <div className="fixed inset-0 flex items-end justify-center p-4 sm:items-center sm:p-5">
             <div className="relative w-full max-w-md bg-white dark:bg-slate-800 rounded-2xl rounded-b-none sm:rounded-b-2xl p-7 shadow-xl">
-              <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100 mb-5">Parametres</h2>
+              <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100 mb-5">Paramètres</h2>
 
               <div className="mb-4">
                 <label className="block text-xs font-semibold text-slate-500 mb-1.5">Email</label>

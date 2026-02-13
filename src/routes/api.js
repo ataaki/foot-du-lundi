@@ -261,7 +261,7 @@ router.delete('/bookings/:id', async (req, res) => {
       });
     }
 
-    res.json({ success: true, message: 'Reservation annulee (remboursement automatique si paiement effectue)' });
+    res.json({ success: true, message: 'Réservation annulée (remboursement automatique si paiement effectué)' });
   } catch (err) {
     return errorHandler(err, res, 500);
   }

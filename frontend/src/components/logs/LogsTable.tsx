@@ -47,7 +47,7 @@ export default function LogsTable({ logs, onDelete }: LogsTableProps) {
       <div className="bg-white dark:bg-slate-800 border border-dashed border-slate-300 dark:border-slate-600 rounded-xl">
         <div className="text-center py-10">
           <p className="text-sm font-medium text-slate-600 dark:text-slate-300">Aucun historique</p>
-          <p className="text-xs text-slate-400 mt-1">Les tentatives de reservation apparaitront ici.</p>
+          <p className="text-xs text-slate-400 mt-1">Les tentatives de réservation apparaîtront ici.</p>
         </div>
       </div>
     )

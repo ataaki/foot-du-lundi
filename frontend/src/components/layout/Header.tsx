@@ -52,7 +52,7 @@ export default function Header({ onOpenSettings }: HeaderProps) {
             size="sm"
             onClick={onOpenSettings}
           >
-            Parametres
+            Paramètres
           </Button>
         </div>
       </div>

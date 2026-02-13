@@ -45,7 +45,7 @@ export default function SlotSearch({ loading, onSearch }: SlotSearchProps) {
           />
         </div>
         <div>
-          <label className="block text-xs font-semibold text-slate-500 mb-1.5">A</label>
+          <label className="block text-xs font-semibold text-slate-500 mb-1.5">À</label>
           <input
             type="time"
             value={to}
@@ -54,7 +54,7 @@ export default function SlotSearch({ loading, onSearch }: SlotSearchProps) {
           />
         </div>
         <div>
-          <label className="block text-xs font-semibold text-slate-500 mb-1.5">Duree</label>
+          <label className="block text-xs font-semibold text-slate-500 mb-1.5">Durée</label>
           <select
             value={duration}
             onChange={(e) => setDuration(e.target.value)}

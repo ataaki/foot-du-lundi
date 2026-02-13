@@ -57,10 +57,10 @@ export default function BookingsList({ data, loading, status, page, onLoad, onCa
       ) : !data?.bookings?.length ? (
         <div className="text-center py-10">
           <p className="text-sm font-medium text-slate-600 dark:text-slate-300">
-            {status === 'upcoming' ? 'Aucune reservation a venir' : 'Aucune reservation passee'}
+            {status === 'upcoming' ? 'Aucune réservation à venir' : 'Aucune réservation passée'}
           </p>
           <p className="text-xs text-slate-400 mt-1">
-            {status === 'upcoming' ? 'Vos prochaines reservations apparaitront ici.' : 'Votre historique de reservations est vide.'}
+            {status === 'upcoming' ? 'Vos prochaines réservations apparaîtront ici.' : 'Votre historique de réservations est vide.'}
           </p>
         </div>
       ) : (

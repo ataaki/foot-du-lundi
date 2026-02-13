@@ -103,7 +103,7 @@ export default function RuleForm({ open, onClose, onSave, rule, config }: RuleFo
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 mb-1.5">Declenchement</label>
+                  <label className="block text-xs font-semibold text-slate-500 mb-1.5">Déclenchement</label>
                   <input
                     type="time"
                     value={triggerTime}
@@ -112,7 +112,7 @@ export default function RuleForm({ open, onClose, onSave, rule, config }: RuleFo
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 mb-1.5">Duree</label>
+                  <label className="block text-xs font-semibold text-slate-500 mb-1.5">Durée</label>
                   <select
                     value={duration}
                     onChange={(e) => setDuration(Number(e.target.value))}

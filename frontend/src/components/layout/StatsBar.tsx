@@ -10,12 +10,12 @@ export default function StatsBar({ activeRules, upcomingBookings, advanceDays, o
     <div className="grid grid-cols-3 gap-2 my-4 sm:gap-3.5 sm:my-6">
       <StatCard
         value={String(activeRules)}
-        label="Regles actives"
+        label="Règles actives"
         accent="border-t-emerald-500"
       />
       <StatCard
         value={String(upcomingBookings)}
-        label="A venir"
+        label="À venir"
         accent="border-t-sky-500"
       />
       <StatCard
