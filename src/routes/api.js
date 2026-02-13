@@ -57,7 +57,7 @@ router.get('/rules', (req, res) => {
 });
 
 router.post('/rules', (req, res) => {
-  const { day_of_week, target_time, duration, playground_order } = req.body;
+  const { day_of_week, target_time, trigger_time, duration, playground_order } = req.body;
 
   // Validate using centralized validators
   const errors = validateBookingRule({ day_of_week, target_time, duration });
@@ -68,6 +68,7 @@ router.post('/rules', (req, res) => {
   const rule = db.createRule({
     day_of_week,
     target_time,
+    trigger_time: trigger_time || '00:00',
     duration: duration || 60,
     playground_order: playground_order || null
   });

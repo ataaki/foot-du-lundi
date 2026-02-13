@@ -2,6 +2,7 @@ export interface Rule {
   id: number
   day_of_week: number
   target_time: string
+  trigger_time: string
   duration: number
   activity: string
   playground_order: string[] | null

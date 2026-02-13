@@ -6,6 +6,8 @@ const { findAndBookSlot, checkExistingBooking } = require('../services/booking')
 const { executePaymentFlow } = require('../services/payment');
 const { logSuccess, logFailure, logPaymentFailure, logNoSlots, logSkipped } = require('../services/logging');
 
+let currentTask = null;
+
 function getBookingAdvanceDays() {
   return parseInt(getSetting('booking_advance_days', String(DEFAULT_BOOKING_ADVANCE_DAYS)));
 }
@@ -190,17 +192,24 @@ async function executeBooking(rule, targetDate) {
 
 /**
  * Check all rules and execute bookings for today's J-45 targets.
+ * When triggerTime is provided, only processes rules matching that trigger_time.
  */
-async function runScheduledBookings() {
+async function runScheduledBookings(triggerTime) {
   if (!getCredentials()) {
     console.log('[Scheduler] No credentials configured, skipping.');
     return;
   }
 
   const rules = getEnabledRules();
-  console.log(`[Scheduler] Checking ${rules.length} active rules...`);
+  const matching = triggerTime
+    ? rules.filter(r => (r.trigger_time || '00:00') === triggerTime)
+    : rules;
 
-  for (const rule of rules) {
+  if (matching.length === 0) return;
+
+  console.log(`[Scheduler] Checking ${matching.length} rule(s) for trigger time ${triggerTime || 'all'}...`);
+
+  for (const rule of matching) {
     const targetDate = getTargetDateForToday(rule.day_of_week);
     if (targetDate) {
       console.log(`[Scheduler] Rule #${rule.id}: ${DAY_NAMES[rule.day_of_week]} ${rule.target_time} -> target date ${targetDate}`);
@@ -211,22 +220,30 @@ async function runScheduledBookings() {
 
 /**
  * Start the cron scheduler.
- * Runs every day at 00:00:05 (5 seconds after midnight to ensure date rollover).
+ * Runs every minute at :05 seconds and checks which rules should trigger at the current HH:MM.
  */
 function startScheduler() {
-  console.log('[Scheduler] Starting scheduler (runs daily at 00:00:05)...');
+  console.log('[Scheduler] Starting scheduler (checks every minute)...');
 
-  // Run at 00:00:05 every day
-  cron.schedule('5 0 0 * * *', async () => {
-    console.log(`[Scheduler] Cron triggered at ${new Date().toISOString()}`);
+  if (currentTask) {
+    currentTask.stop();
+  }
+
+  // Run at second :05 of every minute
+  currentTask = cron.schedule('5 * * * * *', async () => {
+    const now = new Date();
+    const hh = String(now.getHours()).padStart(2, '0');
+    const mm = String(now.getMinutes()).padStart(2, '0');
+    const currentTime = `${hh}:${mm}`;
+
     try {
-      await runScheduledBookings();
+      await runScheduledBookings(currentTime);
     } catch (err) {
       console.error(`[Scheduler] Error in scheduled run: ${err.message}`);
     }
   });
 
-  console.log('[Scheduler] Ready. Next run at 00:00:05.');
+  console.log('[Scheduler] Ready.');
 }
 
 module.exports = {

@@ -17,13 +17,14 @@ export default function RuleCard({ rule, onEdit, onDelete, onToggle, onBookNow, 
   const pgLabel = rule.playground_order?.length ? rule.playground_order.join(', ') : 'Aucune preference'
 
   const j45 = rule.j45
+  const triggerTime = rule.trigger_time || '00:00'
   let j45Label = ''
   if (j45.days_until_attempt === 0) {
-    j45Label = `Reservation auto aujourd'hui a 00:00 pour le ${formatDate(j45.target_date)}`
+    j45Label = `Reservation auto aujourd'hui a ${triggerTime} pour le ${formatDate(j45.target_date)}`
   } else if (j45.days_until_attempt === 1) {
-    j45Label = `Reservation auto demain a 00:00 pour le ${formatDate(j45.target_date)}`
+    j45Label = `Reservation auto demain a ${triggerTime} pour le ${formatDate(j45.target_date)}`
   } else {
-    j45Label = `Reservation auto le ${formatDate(j45.attempt_date)} a 00:00 pour le ${formatDate(j45.target_date)} (dans ${j45.days_until_attempt}j)`
+    j45Label = `Reservation auto le ${formatDate(j45.attempt_date)} a ${triggerTime} pour le ${formatDate(j45.target_date)} (dans ${j45.days_until_attempt}j)`
   }
 
   return (

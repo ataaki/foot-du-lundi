@@ -9,7 +9,7 @@ import PlaygroundPrefs from './PlaygroundPrefs'
 interface RuleFormProps {
   open: boolean
   onClose: () => void
-  onSave: (data: { day_of_week: number; target_time: string; duration: number; playground_order: string[] | null }) => Promise<void>
+  onSave: (data: { day_of_week: number; target_time: string; trigger_time: string; duration: number; playground_order: string[] | null }) => Promise<void>
   rule: Rule | null
   config: DashboardConfig
 }
@@ -17,6 +17,7 @@ interface RuleFormProps {
 export default function RuleForm({ open, onClose, onSave, rule, config }: RuleFormProps) {
   const [dayOfWeek, setDayOfWeek] = useState(1)
   const [targetTime, setTargetTime] = useState('19:00')
+  const [triggerTime, setTriggerTime] = useState('00:00')
   const [duration, setDuration] = useState(60)
   const [playgroundOrder, setPlaygroundOrder] = useState<string[]>([])
   const [saving, setSaving] = useState(false)
@@ -25,11 +26,13 @@ export default function RuleForm({ open, onClose, onSave, rule, config }: RuleFo
     if (rule) {
       setDayOfWeek(rule.day_of_week)
       setTargetTime(rule.target_time)
+      setTriggerTime(rule.trigger_time || '00:00')
       setDuration(rule.duration)
       setPlaygroundOrder(rule.playground_order ?? [])
     } else {
       setDayOfWeek(1)
       setTargetTime('19:00')
+      setTriggerTime('00:00')
       setDuration(60)
       setPlaygroundOrder([])
     }
@@ -41,6 +44,7 @@ export default function RuleForm({ open, onClose, onSave, rule, config }: RuleFo
       await onSave({
         day_of_week: dayOfWeek,
         target_time: targetTime,
+        trigger_time: triggerTime,
         duration,
         playground_order: playgroundOrder.length > 0 ? playgroundOrder : null,
       })
@@ -76,7 +80,7 @@ export default function RuleForm({ open, onClose, onSave, rule, config }: RuleFo
                 {rule ? 'Modifier la règle' : 'Ajouter une règle'}
               </DialogTitle>
 
-              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
                 <div>
                   <label className="block text-xs font-semibold text-slate-500 mb-1.5">Jour</label>
                   <select
@@ -90,7 +94,7 @@ export default function RuleForm({ open, onClose, onSave, rule, config }: RuleFo
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 mb-1.5">Heure</label>
+                  <label className="block text-xs font-semibold text-slate-500 mb-1.5">Heure cible</label>
                   <input
                     type="time"
                     value={targetTime}
@@ -99,7 +103,16 @@ export default function RuleForm({ open, onClose, onSave, rule, config }: RuleFo
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 mb-1.5">Durée</label>
+                  <label className="block text-xs font-semibold text-slate-500 mb-1.5">Declenchement</label>
+                  <input
+                    type="time"
+                    value={triggerTime}
+                    onChange={(e) => setTriggerTime(e.target.value)}
+                    className="w-full px-3 py-2.5 border border-slate-200 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100 rounded-lg text-base min-h-12 sm:text-sm sm:min-h-0 focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-slate-500 mb-1.5">Duree</label>
                   <select
                     value={duration}
                     onChange={(e) => setDuration(Number(e.target.value))}

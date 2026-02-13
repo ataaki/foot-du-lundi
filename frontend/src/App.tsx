@@ -95,7 +95,7 @@ export default function App() {
   }, [dashboard.data])
 
   const handleSaveRule = useCallback(async (data: {
-    day_of_week: number; target_time: string; duration: number; playground_order: string[] | null
+    day_of_week: number; target_time: string; trigger_time: string; duration: number; playground_order: string[] | null
   }) => {
     try {
       if (editingRule) {
@@ -358,7 +358,7 @@ export default function App() {
         <div className="bg-sky-50 dark:bg-sky-500/10 border border-sky-200 dark:border-sky-500/20 rounded-lg p-3.5 mb-4 text-sky-900 dark:text-sky-300 text-xs leading-relaxed sm:p-4 sm:mb-6 sm:text-[13px]">
           <p className="font-semibold mb-1.5">Fonctionnement du bot</p>
           <ul className="list-disc pl-4 space-y-0.5">
-            <li>Le scheduler se declenche chaque jour a <strong>00:00</strong> et reserve les creneaux qui ouvrent a <strong>J-{config.advance_days}</strong></li>
+            <li>Chaque regle se declenche a son heure configuree et reserve les creneaux qui ouvrent a <strong>J-{config.advance_days}</strong></li>
             <li>Si ta banque demande une confirmation 3DS, le bot attend jusqu'a <strong>5 minutes</strong> que tu valides sur ton appli bancaire</li>
             <li>Le bot choisit le meilleur terrain disponible selon tes preferences</li>
           </ul>

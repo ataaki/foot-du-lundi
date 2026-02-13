@@ -5,6 +5,7 @@ import type { BookResult } from '../types'
 interface RuleInput {
   day_of_week: number
   target_time: string
+  trigger_time: string
   duration: number
   playground_order: string[] | null
 }

@@ -53,6 +53,11 @@ function initSchema() {
     db.exec('ALTER TABLE booking_rules ADD COLUMN playground_order TEXT');
   }
 
+  // Migration: add trigger_time column if missing
+  if (!cols.some(c => c.name === 'trigger_time')) {
+    db.exec("ALTER TABLE booking_rules ADD COLUMN trigger_time TEXT NOT NULL DEFAULT '00:00'");
+  }
+
   // Seed default settings
   const existing = db.prepare('SELECT value FROM settings WHERE key = ?').get('booking_advance_days');
   if (!existing) {
@@ -74,21 +79,22 @@ function getRuleById(id) {
   return getDb().prepare('SELECT * FROM booking_rules WHERE id = ?').get(id);
 }
 
-function createRule({ day_of_week, target_time, duration = 60, activity = 'football_5v5', playground_order = null }) {
+function createRule({ day_of_week, target_time, trigger_time = '00:00', duration = 60, activity = 'football_5v5', playground_order = null }) {
   const pgOrder = playground_order ? JSON.stringify(playground_order) : null;
   const stmt = getDb().prepare(
-    'INSERT INTO booking_rules (day_of_week, target_time, duration, activity, playground_order) VALUES (?, ?, ?, ?, ?)'
+    'INSERT INTO booking_rules (day_of_week, target_time, trigger_time, duration, activity, playground_order) VALUES (?, ?, ?, ?, ?, ?)'
   );
-  const result = stmt.run(day_of_week, target_time, duration, activity, pgOrder);
+  const result = stmt.run(day_of_week, target_time, trigger_time, duration, activity, pgOrder);
   return getRuleById(result.lastInsertRowid);
 }
 
-function updateRule(id, { day_of_week, target_time, duration, enabled, playground_order }) {
+function updateRule(id, { day_of_week, target_time, trigger_time, duration, enabled, playground_order }) {
   const fields = [];
   const values = [];
 
   if (day_of_week !== undefined) { fields.push('day_of_week = ?'); values.push(day_of_week); }
   if (target_time !== undefined) { fields.push('target_time = ?'); values.push(target_time); }
+  if (trigger_time !== undefined) { fields.push('trigger_time = ?'); values.push(trigger_time); }
   if (duration !== undefined) { fields.push('duration = ?'); values.push(duration); }
   if (enabled !== undefined) { fields.push('enabled = ?'); values.push(enabled ? 1 : 0); }
   if (playground_order !== undefined) { fields.push('playground_order = ?'); values.push(playground_order ? JSON.stringify(playground_order) : null); }
