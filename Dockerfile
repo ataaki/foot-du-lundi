@@ -103,7 +103,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # Copy production-ready node_modules and Playwright browser from previous stages
 COPY --from=playwright-builder /app/node_modules ./node_modules
-COPY --from=playwright-builder /root/.cache/ms-playwright /root/.cache/ms-playwright
+COPY --from=playwright-builder /root/.cache/ms-playwright /home/node/.cache/ms-playwright
 
 # Copy application code
 COPY package.json package-lock.json ./
@@ -118,7 +118,7 @@ RUN mkdir -p data && \
     # Modify node user to use specified PUID/PGID
     groupmod -o -g ${PGID} node && \
     usermod -o -u ${PUID} node && \
-    chown -R node:node /app
+    chown -R node:node /app /home/node/.cache
 
 # Health check - verify the API is responding
 HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
