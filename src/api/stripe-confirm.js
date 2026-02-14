@@ -1,7 +1,17 @@
 const { chromium } = require('playwright');
-const { STRIPE_STRIPE_POLL_INTERVAL_MS, STRIPE_STRIPE_POLL_TIMEOUT_MS } = require('../constants');
+const { STRIPE_POLL_INTERVAL_MS, STRIPE_POLL_TIMEOUT_MS } = require('../constants');
 
 const PORT = process.env.PORT || 3000;
+
+// Semaphore: only one Playwright/Chromium instance at a time to prevent OOM on small hardware
+let browserLock = Promise.resolve();
+
+function acquireBrowserLock() {
+  let release;
+  const prev = browserLock;
+  browserLock = new Promise(resolve => { release = resolve; });
+  return prev.then(() => release);
+}
 
 /**
  * Confirm a Stripe payment using Stripe.js in a headless browser.
@@ -22,6 +32,7 @@ async function confirmStripePayment(clientSecret) {
     throw new Error('Configuration Stripe incomplète — vérifiez que resolveConfig() a été appelé au démarrage');
   }
 
+  const releaseLock = acquireBrowserLock();
   let browser;
   try {
     browser = await chromium.launch({ headless: true });
@@ -66,6 +77,7 @@ async function confirmStripePayment(clientSecret) {
     if (browser) {
       await browser.close().catch(() => {});
     }
+    releaseLock();
   }
 }
 

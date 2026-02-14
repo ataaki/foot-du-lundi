@@ -79,6 +79,16 @@ router.put('/rules/:id', (req, res) => {
   const rule = db.getRuleById(req.params.id);
   if (!rule) return notFoundError(res, 'Rule');
 
+  const { day_of_week, target_time, duration } = req.body;
+  const errors = validateBookingRule({
+    day_of_week: day_of_week !== undefined ? day_of_week : rule.day_of_week,
+    target_time: target_time !== undefined ? target_time : rule.target_time,
+    duration: duration !== undefined ? duration : rule.duration,
+  });
+  if (errors.length > 0) {
+    return validationError(res, errors[0]);
+  }
+
   const updated = db.updateRule(req.params.id, req.body);
   res.json(updated);
 });
@@ -286,13 +296,10 @@ router.get('/slots', async (req, res) => {
     const { date, duration, from, to } = req.query;
     if (!date) return res.status(400).json({ error: 'date query param required (YYYY-MM-DD)' });
 
-    // If duration specified, fetch for that duration only; otherwise fetch all 3
+    // If duration specified, fetch for that duration only; otherwise fetch all 3 in parallel
     const durations = duration ? [parseInt(duration)] : [60, 90, 120];
-    let allSlots = [];
-    for (const dur of durations) {
-      const slots = await findAllSlots(date, dur);
-      allSlots.push(...slots);
-    }
+    const results = await Promise.all(durations.map(dur => findAllSlots(date, dur)));
+    let allSlots = results.flat();
 
     // Sort by time, then duration, then playground name
     allSlots.sort((a, b) => {

@@ -26,7 +26,7 @@ app.get('/{*path}', (req, res) => {
   res.sendFile(path.join(__dirname, '../public/index.html'));
 });
 
-app.listen(PORT, async () => {
+const server = app.listen(PORT, async () => {
   console.log(`Foot Du Lundi running at http://localhost:${PORT}`);
 
   // Only resolve config if credentials are already configured
@@ -45,3 +45,20 @@ app.listen(PORT, async () => {
 
   startScheduler();
 });
+
+// Graceful shutdown — wait for in-flight requests (payments, Playwright) before exiting
+function shutdown(signal) {
+  console.log(`[Server] ${signal} received, shutting down gracefully...`);
+  server.close(() => {
+    console.log('[Server] HTTP server closed');
+    process.exit(0);
+  });
+  // Force exit after 30s if something hangs (e.g. stuck Playwright instance)
+  setTimeout(() => {
+    console.error('[Server] Forced shutdown after timeout');
+    process.exit(1);
+  }, 30_000).unref();
+}
+
+process.on('SIGTERM', () => shutdown('SIGTERM'));
+process.on('SIGINT', () => shutdown('SIGINT'));

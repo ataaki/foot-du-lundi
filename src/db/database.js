@@ -1,4 +1,5 @@
 const Database = require('better-sqlite3');
+const crypto = require('crypto');
 const path = require('path');
 
 const DB_PATH = path.join(__dirname, '../../data/bookings.db');
@@ -14,15 +15,35 @@ function getDb() {
   return db;
 }
 
+// Ordered list of migrations. Each entry runs once, tracked by schema_version.
+// NEVER reorder or remove entries — only append new ones.
+const MIGRATIONS = [
+  // v1: add playground_order column
+  () => {
+    const cols = db.pragma('table_info(booking_rules)');
+    if (!cols.some(c => c.name === 'playground_order')) {
+      db.exec('ALTER TABLE booking_rules ADD COLUMN playground_order TEXT');
+    }
+  },
+  // v2: add trigger_time column
+  () => {
+    const cols = db.pragma('table_info(booking_rules)');
+    if (!cols.some(c => c.name === 'trigger_time')) {
+      db.exec("ALTER TABLE booking_rules ADD COLUMN trigger_time TEXT NOT NULL DEFAULT '00:00'");
+    }
+  },
+];
+
 function initSchema() {
+  // Base tables (uses db.exec for DDL statements — no user input involved)
   db.exec(`
     CREATE TABLE IF NOT EXISTS booking_rules (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
-      day_of_week INTEGER NOT NULL,          -- 0=Sunday, 1=Monday, ..., 6=Saturday
-      target_time TEXT NOT NULL,              -- HH:MM format (local time)
-      duration INTEGER NOT NULL DEFAULT 60,  -- minutes: 60, 90, 120
+      day_of_week INTEGER NOT NULL,
+      target_time TEXT NOT NULL,
+      duration INTEGER NOT NULL DEFAULT 60,
       activity TEXT NOT NULL DEFAULT 'football_5v5',
-      playground_order TEXT,                  -- JSON array: ["Foot 3","Foot 7","Foot 1"]
+      playground_order TEXT,
       enabled INTEGER NOT NULL DEFAULT 1,
       created_at TEXT NOT NULL DEFAULT (datetime('now'))
     );
@@ -30,11 +51,11 @@ function initSchema() {
     CREATE TABLE IF NOT EXISTS booking_logs (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       rule_id INTEGER,
-      target_date TEXT NOT NULL,              -- YYYY-MM-DD
-      target_time TEXT NOT NULL,              -- HH:MM
-      booked_time TEXT,                       -- actual booked time HH:MM
+      target_date TEXT NOT NULL,
+      target_time TEXT NOT NULL,
+      booked_time TEXT,
       playground TEXT,
-      status TEXT NOT NULL,                   -- 'success', 'failed', 'no_slots', 'pending', 'skipped'
+      status TEXT NOT NULL,
       booking_id TEXT,
       error_message TEXT,
       created_at TEXT NOT NULL DEFAULT (datetime('now')),
@@ -45,17 +66,20 @@ function initSchema() {
       key TEXT PRIMARY KEY,
       value TEXT NOT NULL
     );
+
+    CREATE TABLE IF NOT EXISTS schema_version (
+      version INTEGER PRIMARY KEY
+    );
   `);
 
-  // Migration: add playground_order column if missing
-  const cols = db.pragma('table_info(booking_rules)');
-  if (!cols.some(c => c.name === 'playground_order')) {
-    db.exec('ALTER TABLE booking_rules ADD COLUMN playground_order TEXT');
-  }
+  // Run pending migrations
+  const row = db.prepare('SELECT MAX(version) as v FROM schema_version').get();
+  const currentVersion = row?.v ?? 0;
 
-  // Migration: add trigger_time column if missing
-  if (!cols.some(c => c.name === 'trigger_time')) {
-    db.exec("ALTER TABLE booking_rules ADD COLUMN trigger_time TEXT NOT NULL DEFAULT '00:00'");
+  for (let i = currentVersion; i < MIGRATIONS.length; i++) {
+    console.log(`[DB] Running migration v${i + 1}...`);
+    MIGRATIONS[i]();
+    db.prepare('INSERT INTO schema_version (version) VALUES (?)').run(i + 1);
   }
 
   // Seed default settings
@@ -156,18 +180,56 @@ function setSetting(key, value) {
   getDb().prepare('INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)').run(key, String(value));
 }
 
+// --- Credential Encryption ---
+
+// Derive a stable encryption key from DB_PATH + a fixed salt.
+// Not meant to resist a targeted attacker with full disk access,
+// but prevents the password from sitting in plaintext in the SQLite file.
+const ENCRYPTION_KEY = crypto.scryptSync(DB_PATH, 'sdlv-booker-salt', 32);
+
+function encrypt(text) {
+  const iv = crypto.randomBytes(12);
+  const cipher = crypto.createCipheriv('aes-256-gcm', ENCRYPTION_KEY, iv);
+  const encrypted = Buffer.concat([cipher.update(text, 'utf8'), cipher.final()]);
+  const tag = cipher.getAuthTag();
+  // Store as iv:tag:ciphertext (hex-encoded)
+  return `${iv.toString('hex')}:${tag.toString('hex')}:${encrypted.toString('hex')}`;
+}
+
+function decrypt(data) {
+  const [ivHex, tagHex, encHex] = data.split(':');
+  if (!ivHex || !tagHex || !encHex) return null;
+  const decipher = crypto.createDecipheriv('aes-256-gcm', ENCRYPTION_KEY, Buffer.from(ivHex, 'hex'));
+  decipher.setAuthTag(Buffer.from(tagHex, 'hex'));
+  return decipher.update(encHex, 'hex', 'utf8') + decipher.final('utf8');
+}
+
 // --- Credentials ---
 
 function getCredentials() {
   const email = getSetting('doinsport_email');
-  const password = getSetting('doinsport_password');
-  if (!email || !password) return null;
+  const encPassword = getSetting('doinsport_password');
+  if (!email || !encPassword) return null;
+
+  // Support both encrypted (contains ':') and legacy plaintext passwords
+  let password;
+  if (encPassword.includes(':')) {
+    try {
+      password = decrypt(encPassword);
+    } catch {
+      // Decryption failed — likely a legacy plaintext value, use as-is
+      password = encPassword;
+    }
+  } else {
+    password = encPassword;
+  }
+
   return { email, password };
 }
 
 function setCredentials(email, password) {
   setSetting('doinsport_email', email);
-  setSetting('doinsport_password', password);
+  setSetting('doinsport_password', encrypt(password));
 }
 
 module.exports = {
