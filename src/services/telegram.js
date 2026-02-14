@@ -61,7 +61,7 @@ async function sendTelegram(token, chatId, text) {
   const res = await fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ chat_id: chatId, text, parse_mode: 'HTML' }),
+    body: JSON.stringify({ chat_id: chatId, text, parse_mode: 'HTML', disable_notification: false }),
   });
   if (!res.ok) {
     const body = await res.json().catch(() => ({}));
