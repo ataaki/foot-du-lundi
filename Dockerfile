@@ -51,7 +51,6 @@ COPY package.json ./
 
 # Install minimal Playwright runtime dependencies, Chromium, and clean up (Optimization #4 & #5)
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    # Essential libraries only (Optimization #4 - removed libatk*, libcups2, libasound2)
     libnss3 \
     libdrm2 \
     libxkbcommon0 \
@@ -62,6 +61,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libpango-1.0-0 \
     libcairo2 \
     libxshmfence1 \
+    libatk1.0-0 \
+    libatk-bridge2.0-0 \
+    libcups2 \
+    libasound2 \
     fonts-liberation \
     && rm -rf /var/lib/apt/lists/* && \
     # Install Playwright Chromium
@@ -83,7 +86,6 @@ WORKDIR /app
 
 # Install minimal runtime dependencies and setup in one layer (Optimization #4 & #5)
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    # Essential libraries only (Optimization #4 - removed accessibility, printing, audio libs)
     libnss3 \
     libdrm2 \
     libxkbcommon0 \
@@ -94,6 +96,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libpango-1.0-0 \
     libcairo2 \
     libxshmfence1 \
+    libatk1.0-0 \
+    libatk-bridge2.0-0 \
+    libcups2 \
+    libasound2 \
     fonts-liberation \
     && rm -rf /var/lib/apt/lists/* \
     # Remove unnecessary locale data to save space (Optimization #3)
