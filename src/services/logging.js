@@ -220,15 +220,15 @@ function logSkipped({ ruleId, targetDate, targetTime, reason }) {
  * @param {string} params.bookingId - DoInSport booking ID
  * @returns {object} Database insert result
  */
-function logCancellation({ targetDate, targetTime, playground, bookingId }) {
+function logCancellation({ ruleId = null, targetDate, targetTime, playground, bookingId, errorMessage }) {
   console.log(`[Booking] Cancelled: ${bookingId} on ${targetDate}`);
 
   const result = logBookingResult({
-    ruleId: null, targetDate, targetTime: targetTime || '-',
-    playground, status: BOOKING_STATUS.CANCELLED, bookingId,
+    ruleId, targetDate, targetTime: targetTime || '-',
+    playground, status: BOOKING_STATUS.CANCELLED, bookingId, errorMessage,
   });
 
-  notify({ targetDate, targetTime, playground, status: BOOKING_STATUS.CANCELLED });
+  notify({ targetDate, targetTime, playground, status: BOOKING_STATUS.CANCELLED, errorMessage });
   return result;
 }
 

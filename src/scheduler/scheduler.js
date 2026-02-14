@@ -4,7 +4,8 @@ const { DAY_NAMES, DEFAULT_BOOKING_ADVANCE_DAYS } = require('../constants');
 const { parsePlaygroundOrder } = require('../utils/json-helpers');
 const { findAndBookSlot, checkExistingBooking } = require('../services/booking');
 const { executePaymentFlow } = require('../services/payment');
-const { logSuccess, logFailure, logPaymentFailure, logNoSlots, logSkipped } = require('../services/logging');
+const { cancelBooking } = require('../api/doinsport');
+const { logSuccess, logFailure, logPaymentFailure, logCancellation, logNoSlots, logSkipped } = require('../services/logging');
 
 let currentTask = null;
 
@@ -156,22 +157,44 @@ async function executeBooking(rule, targetDate) {
       };
 
     } catch (paymentErr) {
-      // Payment failed - log payment failure
-      logPaymentFailure({
-        ruleId: rule.id,
-        targetDate,
-        targetTime: rule.target_time,
-        bookedTime: slot.startAt,
-        playground: playground.name,
-        bookingId,
-        error: paymentErr,
-      });
+      // Payment failed - cancel the unpaid booking on DoInSport
+      try {
+        await cancelBooking(bookingId);
+        console.log(`[Scheduler] Réservation ${bookingId} annulée après échec de paiement`);
 
-      return {
-        status: 'payment_failed',
-        bookingId,
-        error: paymentErr.message,
-      };
+        logCancellation({
+          ruleId: rule.id,
+          targetDate,
+          targetTime: rule.target_time,
+          playground: playground.name,
+          bookingId,
+          errorMessage: `Paiement échoué: ${paymentErr.message}`,
+        });
+
+        return {
+          status: 'cancelled',
+          bookingId,
+          error: paymentErr.message,
+        };
+      } catch (cancelErr) {
+        console.error(`[Scheduler] Échec de l'annulation de ${bookingId}: ${cancelErr.message}`);
+
+        logPaymentFailure({
+          ruleId: rule.id,
+          targetDate,
+          targetTime: rule.target_time,
+          bookedTime: slot.startAt,
+          playground: playground.name,
+          bookingId,
+          error: paymentErr,
+        });
+
+        return {
+          status: 'payment_failed',
+          bookingId,
+          error: paymentErr.message,
+        };
+      }
     }
 
   } catch (err) {
