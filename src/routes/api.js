@@ -319,7 +319,7 @@ router.get('/slots', async (req, res) => {
       startAt: s.slot.startAt,
       priceId: s.price.id,
       price: s.price.pricePerParticipant,
-      duration: s.price.duration,
+      duration: s.price.duration / 60,
       participantCount: s.price.participantCount,
     })));
   } catch (err) {

@@ -41,7 +41,7 @@ export default function SlotResults({ slots, showDuration, onBook }: SlotResults
                 {showDuration && (
                   <>
                     <span className="text-slate-300 dark:text-slate-600">·</span>
-                    <span>{formatDuration(s.duration / 60)}</span>
+                    <span>{formatDuration(s.duration)}</span>
                   </>
                 )}
               </div>
@@ -78,7 +78,7 @@ export default function SlotResults({ slots, showDuration, onBook }: SlotResults
                 <tr key={key} className="border-t border-slate-100 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors">
                   <td className="px-4 py-2.5 font-semibold text-slate-700 dark:text-slate-300">{s.startAt}</td>
                   <td className="px-4 py-2.5 text-slate-500 dark:text-slate-400">{s.playground.name}</td>
-                  {showDuration && <td className="px-4 py-2.5 text-slate-500 dark:text-slate-400">{formatDuration(s.duration / 60)}</td>}
+                  {showDuration && <td className="px-4 py-2.5 text-slate-500 dark:text-slate-400">{formatDuration(s.duration)}</td>}
                   <td className="px-4 py-2.5 text-slate-500 dark:text-slate-400">{formatPrice(s.price)}</td>
                   <td className="px-4 py-2.5">
                     <Button variant="success" size="sm" onClick={() => handleBook(s)} loading={bookingSlot === key}>

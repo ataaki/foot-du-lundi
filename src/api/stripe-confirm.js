@@ -32,7 +32,7 @@ async function confirmStripePayment(clientSecret) {
     throw new Error('Configuration Stripe incomplète — vérifiez que resolveConfig() a été appelé au démarrage');
   }
 
-  const releaseLock = acquireBrowserLock();
+  const releaseLock = await acquireBrowserLock();
   let browser;
   try {
     browser = await chromium.launch({ headless: true });
@@ -64,9 +64,10 @@ async function confirmStripePayment(clientSecret) {
       return result.paymentIntent;
     }
 
-    // 3DS challenge triggered — poll until user confirms on banking app
-    if (result.paymentIntent?.status === 'requires_action' || result.paymentIntent?.status === 'requires_confirmation') {
-      console.log(`[Stripe] 3DS challenge triggered (status: ${result.paymentIntent.status}), polling for up to ${STRIPE_POLL_TIMEOUT_MS / 60000} minutes...`);
+    // 3DS challenge or async bank processing — poll until resolved
+    const pendingStatuses = ['requires_action', 'requires_confirmation', 'processing'];
+    if (pendingStatuses.includes(result.paymentIntent?.status)) {
+      console.log(`[Stripe] Payment pending (status: ${result.paymentIntent.status}), polling for up to ${STRIPE_POLL_TIMEOUT_MS / 60000} minutes...`);
 
       const pollResult = await pollPaymentStatus(page, pk, account, clientSecret);
       return pollResult;
